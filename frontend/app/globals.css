@@ -1,26 +1,136 @@
 @import "tailwindcss";
 
+@theme {
+  --color-background: #0B1020;
+  --color-card: #111827;
+  --color-border: #1F2937;
+  --color-primary: #3B82F6;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-critical: #EF4444;
+  --color-text: #F9FAFB;
+  --color-muted: #9CA3AF;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0B1020;
+  --foreground: #F9FAFB;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Custom Reset & Base Styling */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0B1020;
+  color: #F9FAFB;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Glassmorphism Panel Utilities */
+.glass-panel {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(31, 41, 55, 0.65);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(17, 24, 39, 0.85);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glowing Neon Card Animations */
+.glow-primary {
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.glow-critical {
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.glow-success {
+  box-shadow: 0 0 25px rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.glow-warning {
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Custom Scrollbar for Terminal Logs & Sidebars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B1020;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1F2937;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3B82F6;
+}
+
+/* Custom animations for alerts and statuses */
+@keyframes cyberPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.92);
+  }
+}
+
+.animate-cyber-pulse {
+  animation: cyberPulse 2s infinite ease-in-out;
+}
+
+@keyframes gridFlow {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 40px;
+  }
+}
+
+.cyber-grid-bg {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(31, 41, 55, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 41, 55, 0.15) 1px, transparent 1px);
+  animation: gridFlow 20s linear infinite;
+}
+
+/* Glowing text effects */
+.cyber-glow-text {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.cyber-glow-text-critical {
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+}
+
+.cyber-glow-text-success {
+  text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
 }
