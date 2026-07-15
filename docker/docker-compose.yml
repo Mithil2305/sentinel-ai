@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: sentinel-postgres
+    environment:
+      POSTGRES_USER: sentinel_user
+      POSTGRES_PASSWORD: SentinelPass123!
+      POSTGRES_DB: sentinel_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinel_user -d sentinel_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: sentinel-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: sentinel-backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ../backend:/app
+      - ../ai-engine:/app/ai_engine
+      - ../detection-engine:/app/detection_engine
+      - ../remediation:/app/remediation
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://sentinel_user:SentinelPass123!@postgres:5432/sentinel_db
+      - REDIS_URL=redis://redis:6379/0
+      - LLM_PROVIDER=local
+      - LOCAL_LLM_BASE_URL=http://host.docker.internal:11434/v1
+      - MODEL_TRIAGE_SEVERITY=phi-4-mini:Q4_K_M
+      - MODEL_FORENSICS_MITIGATION=qwen2.5-coder:3b-instruct
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_worker:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: sentinel-celery
+    command: celery -A app.core.celery_app worker --loglevel=info
+    volumes:
+      - ../backend:/app
+      - ../ai-engine:/app/ai_engine
+      - ../detection-engine:/app/detection_engine
+      - ../remediation:/app/remediation
+    environment:
+      - DATABASE_URL=postgresql://sentinel_user:SentinelPass123!@postgres:5432/sentinel_db
+      - REDIS_URL=redis://redis:6379/0
+      - LLM_PROVIDER=local
+      - LOCAL_LLM_BASE_URL=http://host.docker.internal:11434/v1
+      - MODEL_TRIAGE_SEVERITY=phi-4-mini:Q4_K_M
+      - MODEL_FORENSICS_MITIGATION=qwen2.5-coder:3b-instruct
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: sentinel-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000/api/v1
+      - NEXT_PUBLIC_WS_URL=ws://backend:8000/ws
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
