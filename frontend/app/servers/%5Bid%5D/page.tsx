@@ -4,13 +4,18 @@ import React, { use, useEffect, useState } from 'react';
 import { useApp } from '@/store/app-context';
 import { useRouter } from 'next/navigation';
 import { 
-  ArrowLeft, HardDrive, ShieldAlert, Cpu, Network, CheckCircle, 
-  XCircle, AlertTriangle, ShieldCheck, Clock, Settings, RefreshCw, Power 
+  ArrowLeft, Cpu, Network, CheckCircle, 
+  XCircle, AlertTriangle, Settings, Power 
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
 } from 'recharts';
+
+// Import Reusable Design System Components
+import { PageHeader } from '@/components/ui/page-header';
+import { ActionButton } from '@/components/ui/action-button';
+import { StatusChip } from '@/components/ui/status-chip';
 
 export default function ServerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -18,8 +23,7 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
   const { 
     servers, 
     incidents, 
-    killProcess,
-    addLog
+    killProcess
   } = useApp();
 
   const [mounted, setMounted] = useState(false);
@@ -33,15 +37,15 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
 
   if (!server) {
     return (
-      <div className="max-w-md mx-auto text-center py-20 space-y-4">
-        <h2 className="text-lg font-bold text-critical">Server Node Not Found</h2>
-        <p className="text-xs text-muted">The asset ID &ldquo;{id}&rdquo; is not registered in SentinelAI network inventory.</p>
-        <button 
+      <div className="max-w-md mx-auto text-center py-20 space-y-4 select-none">
+        <h2 className="text-subsection font-bold text-critical">Server Node Not Found</h2>
+        <p className="text-caption text-muted">The asset ID &ldquo;{id}&rdquo; is not registered in SentinelAI network inventory.</p>
+        <ActionButton 
           onClick={() => router.push('/servers')}
-          className="px-4 py-2 bg-primary text-text rounded-lg text-xs font-bold"
+          variant="primary"
         >
           Return to Assets
-        </button>
+        </ActionButton>
       </div>
     );
   }
@@ -57,26 +61,26 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
   }));
 
   return (
-    <div className="max-w-7xl mx-auto pb-16 space-y-8">
+    <div className="max-w-7xl mx-auto pb-16 space-y-8 animate-fade-in">
       
       {/* HEADER BAR */}
-      <div className="flex items-center gap-5 border-b border-border pb-5 mb-8">
-        <button 
+      <div className="flex items-start gap-4 border-b border-border pb-5 mb-8">
+        <ActionButton 
           onClick={() => router.push('/servers')}
-          className="p-2 rounded-lg border border-border bg-card hover:bg-border/60 text-muted hover:text-text transition-colors cursor-pointer"
+          variant="outline"
+          size="sm"
+          className="p-2 h-10 w-10 flex items-center justify-center flex-shrink-0"
         >
           <ArrowLeft className="h-4.5 w-4.5" />
-        </button>
-        <div>
+        </ActionButton>
+        <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-extrabold tracking-tight">{server.hostname}</h1>
-            <span className={`px-2.5 py-1 rounded text-xs font-extrabold border uppercase ${
-              server.status === 'online' ? 'bg-success/15 text-success border-success/30' : 'bg-warning/15 text-warning border-warning/30'
-            }`}>
-              {server.status}
-            </span>
+            <h1 className="text-subsection font-bold text-text leading-none">{server.hostname}</h1>
+            <StatusChip status={server.status === 'online' ? 'healthy' : server.status} />
           </div>
-          <p className="text-xs text-muted font-mono mt-1">{server.ipAddress} • OS: {server.os.toUpperCase()}</p>
+          <p className="text-caption text-muted font-mono mt-2 font-normal">
+            Node Address: <strong className="text-text font-bold">{server.ipAddress}</strong> • OS Platform: <strong className="text-text font-bold">{server.os.toUpperCase()}</strong>
+          </p>
         </div>
       </div>
 
@@ -87,21 +91,21 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
         <div className="md:col-span-2 space-y-8">
           
           {/* Timeline Chart */}
-          <div className="glass-panel rounded-xl p-6 flex flex-col h-80">
-            <div className="flex items-center justify-between border-b border-border pb-3.5 mb-5">
+          <div className="glass-panel rounded-card p-card-padding flex flex-col h-80 border border-border/80 shadow-md">
+            <div className="flex items-center justify-between border-b border-border pb-3.5 mb-5 select-none">
               <div>
-                <h3 className="font-bold text-sm text-text uppercase tracking-wider">Node Telemetry History</h3>
-                <p className="text-xs text-muted mt-0.5">CPU & RAM utilisation timeline</p>
+                <h3 className="font-bold text-[14px] text-text uppercase tracking-wider">Node Telemetry History</h3>
+                <p className="text-caption text-muted mt-1 font-normal">CPU & RAM utilisation timeline</p>
               </div>
-              <div className="flex items-center gap-3.5 text-xs font-medium">
-                <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-primary" /> CPU</span>
-                <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-success" /> RAM</span>
+              <div className="flex items-center gap-3.5 text-caption font-bold">
+                <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-badge bg-primary" /> CPU</span>
+                <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-badge bg-success" /> RAM</span>
               </div>
             </div>
 
-            <div className="flex-1 w-full min-h-0">
+            <div className="w-full h-[180px]">
               {mounted ? (
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <AreaChart data={historyData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
                     <defs>
                       <linearGradient id="cpuGrad" x1="0" y1="0" x2="0" y2="1">
@@ -122,22 +126,22 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
                   </AreaChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="w-full h-full animate-pulse bg-border/20 rounded" />
+                <div className="w-full h-full animate-pulse bg-border/20 rounded-card" />
               )}
             </div>
           </div>
 
           {/* Security Compliance checks */}
-          <div className="glass-panel rounded-xl p-6">
-            <div className="border-b border-border pb-3.5 mb-5">
-              <h3 className="font-bold text-sm text-text uppercase tracking-wider">Automated Audit & Compliance Checks</h3>
-              <p className="text-xs text-muted mt-0.5">SentinelAgent CIS benchmark configuration status</p>
+          <div className="glass-panel rounded-card p-card-padding border border-border/80 shadow-md">
+            <div className="border-b border-border pb-3.5 mb-5 select-none">
+              <h3 className="font-bold text-[14px] text-text uppercase tracking-wider">Automated Audit & Compliance Checks</h3>
+              <p className="text-caption text-muted mt-1 font-normal">SentinelAgent CIS benchmark configuration status</p>
             </div>
             
             <div className="space-y-4">
               {server.checks.map((chk) => (
-                <div key={chk.id} className="p-4.5 rounded-lg bg-background/55 border border-border flex items-start gap-4">
-                  <div className="mt-1">
+                <div key={chk.id} className="p-4.5 rounded-input bg-background/55 border border-border flex items-start gap-4">
+                  <div className="mt-1 flex-shrink-0">
                     {chk.status === 'passed' ? (
                       <CheckCircle className="h-5 w-5 text-success" />
                     ) : chk.status === 'warning' ? (
@@ -146,14 +150,10 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
                       <XCircle className="h-5 w-5 text-critical animate-pulse" />
                     )}
                   </div>
-                  <div className="text-xs leading-relaxed">
+                  <div className="text-caption leading-relaxed font-normal">
                     <div className="flex items-center gap-2.5">
-                      <span className="font-bold text-text text-sm">{chk.title}</span>
-                      <span className={`px-2 py-0.5 rounded text-[9px] font-bold border uppercase tracking-wider ${
-                        chk.status === 'passed' ? 'bg-success/10 text-success border-success/35' : chk.status === 'warning' ? 'bg-warning/10 text-warning border-warning/35' : 'bg-critical/10 text-critical border-critical/35'
-                      }`}>
-                        {chk.status}
-                      </span>
+                      <span className="font-bold text-text text-small-text">{chk.title}</span>
+                      <StatusChip status={chk.status === 'passed' ? 'healthy' : chk.status === 'warning' ? 'warning' : 'critical'} />
                     </div>
                     <p className="text-muted mt-1.5 leading-normal">{chk.details}</p>
                   </div>
@@ -163,15 +163,15 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* Open Ports List */}
-          <div className="glass-panel rounded-xl p-6">
-            <div className="border-b border-border pb-3 mb-4">
-              <span className="text-sm font-bold text-muted uppercase tracking-wider">Open Ingress Ports Matrix</span>
+          <div className="glass-panel rounded-card p-card-padding border border-border/80 shadow-md">
+            <div className="border-b border-border pb-3 mb-4 select-none">
+              <span className="text-caption font-bold text-text uppercase tracking-wider block">Open Ingress Ports Matrix</span>
             </div>
             <div className="flex flex-wrap gap-3">
               {server.openPorts.map((port) => (
                 <span 
                   key={port} 
-                  className="px-4 py-2 rounded-lg border border-border bg-card hover:border-primary/30 text-xs font-mono font-bold text-text/95 transition-all"
+                  className="px-4 py-2 rounded-input border border-border bg-card hover:border-primary/30 text-caption font-mono font-bold text-text/95 transition-all select-none"
                 >
                   :{port}
                 </span>
@@ -185,13 +185,13 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
         <div className="space-y-8">
           
           {/* Agent Status Detail Card */}
-          <div className="glass-panel rounded-xl p-6">
-            <div className="border-b border-border pb-3.5 mb-5 flex items-center justify-between">
-              <span className="text-sm font-bold text-text uppercase tracking-wider">SentinelAgent Node Detail</span>
+          <div className="glass-panel rounded-card p-6 border border-border/80 shadow-md">
+            <div className="border-b border-border pb-3.5 mb-5 flex items-center justify-between select-none">
+              <span className="text-caption font-bold text-text uppercase tracking-wider">SentinelAgent Node Detail</span>
               <Settings className="h-4.5 w-4.5 text-muted" />
             </div>
 
-            <div className="text-xs space-y-3.5 text-muted leading-relaxed">
+            <div className="text-caption space-y-3.5 text-muted leading-relaxed font-normal">
               <div className="flex justify-between border-b border-border/40 pb-2">
                 <span>Agent Status:</span>
                 <span className="font-bold text-success capitalize">{server.agentStatus}</span>
@@ -202,7 +202,7 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
               </div>
               <div className="flex justify-between border-b border-border/40 pb-2">
                 <span>Core Kernel:</span>
-                <span className="font-mono text-text">5.15.0-89-generic</span>
+                <span className="font-mono text-text font-bold">5.15.0-89-generic</span>
               </div>
               <div className="flex justify-between border-b border-border/40 pb-2">
                 <span>Vulnerability Score:</span>
@@ -218,43 +218,44 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* Running process controller with Kill actions */}
-          <div className="glass-panel rounded-xl p-6 flex flex-col max-h-[400px]">
-            <div className="border-b border-border pb-3.5 mb-5 flex-shrink-0 flex items-center justify-between">
-              <span className="text-sm font-bold text-text uppercase tracking-wider">Process Tree ({server.runningProcesses.length})</span>
-              <span className="text-xs text-muted">Click to terminate PID</span>
+          <div className="glass-panel rounded-card p-6 flex flex-col max-h-[400px] border border-border/80 shadow-md">
+            <div className="border-b border-border pb-3.5 mb-5 flex-shrink-0 flex items-center justify-between select-none">
+              <span className="text-caption font-bold text-text uppercase tracking-wider">Process Tree ({server.runningProcesses.length})</span>
+              <span className="text-[10px] text-muted font-bold uppercase">Terminate PID</span>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-3">
+            <div className="flex-1 overflow-y-auto space-y-3 pr-1">
               {server.runningProcesses.map((p) => (
                 <div 
                   key={p.pid} 
-                  className={`p-3 rounded-lg border transition-colors flex items-center justify-between text-xs ${
+                  className={`p-3 rounded-input border transition-colors flex items-center justify-between text-caption ${
                     p.threatScore > 50 
                       ? 'bg-critical/5 border-critical/40 hover:bg-critical/10' 
                       : 'bg-background/55 border-border hover:border-primary/20'
                   }`}
                 >
-                  <div className="flex flex-col text-left">
+                  <div className="flex flex-col text-left font-normal">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-text truncate max-w-[130px]">{p.name}</span>
-                      <span className="font-mono text-muted text-[10px]">({p.pid})</span>
+                      <span className="font-mono text-muted text-[10px] font-bold">({p.pid})</span>
                     </div>
-                    <div className="flex items-center gap-2.5 text-[10px] text-muted mt-1 font-medium">
+                    <div className="flex items-center gap-2.5 text-[10px] text-muted mt-1 font-bold font-mono">
                       <span>CPU: {p.cpu}%</span>
                       <span>RAM: {p.ram}%</span>
                     </div>
                   </div>
 
                   {p.threatScore > 50 ? (
-                    <button 
+                    <ActionButton 
                       onClick={() => killProcess(server.id, p.pid)}
-                      className="px-2.5 py-1.5 rounded bg-critical hover:bg-critical/80 text-text font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer"
-                      title="Kill Process"
+                      variant="danger"
+                      size="sm"
+                      className="px-2 py-1 h-7 text-[10px] flex items-center gap-1 font-bold uppercase tracking-wider"
                     >
                       <Power className="h-3 w-3" /> Kill
-                    </button>
+                    </ActionButton>
                   ) : (
-                    <span className="text-[10px] text-muted">Safe</span>
+                    <span className="text-[10px] text-muted font-bold uppercase select-none pr-1">Safe</span>
                   )}
                 </div>
               ))}
@@ -262,26 +263,26 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* Active Network Connections */}
-          <div className="glass-panel rounded-xl p-6">
-            <div className="border-b border-border pb-3.5 mb-5 flex items-center justify-between">
-              <span className="text-sm font-bold text-text uppercase tracking-wider">Active Socket Matrices</span>
+          <div className="glass-panel rounded-card p-6 border border-border/80 shadow-md">
+            <div className="border-b border-border pb-3.5 mb-5 flex items-center justify-between select-none">
+              <span className="text-caption font-bold text-text uppercase tracking-wider">Active Socket Matrices</span>
               <Network className="h-4.5 w-4.5 text-muted" />
             </div>
 
-            <div className="space-y-2.5 max-h-[260px] overflow-y-auto">
+            <div className="space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
               {server.connections.map((c, i) => (
-                <div key={i} className="p-3 rounded bg-background/55 border border-border flex items-center justify-between text-xs leading-relaxed">
+                <div key={i} className="p-3 rounded-input bg-background/55 border border-border flex items-center justify-between text-caption leading-relaxed font-normal">
                   <div className="flex flex-col">
                     <span className="font-bold text-text">{c.proto.toUpperCase()} {c.localAddr}</span>
-                    <span className="text-muted mt-0.5">← {c.foreignAddr}</span>
+                    <span className="text-muted mt-0.5 font-mono text-[10px]">← {c.foreignAddr}</span>
                   </div>
-                  <span className="font-mono text-muted text-[10px] bg-border/40 px-2 py-0.5 rounded">
+                  <span className="font-mono text-muted text-[10px] bg-border/40 px-2 py-0.5 rounded-badge font-bold select-none">
                     PID:{c.pid}
                   </span>
                 </div>
               ))}
               {server.connections.length === 0 && (
-                <div className="text-center text-xs text-muted py-6">No network sockets open.</div>
+                <div className="text-center text-caption text-muted py-6 font-normal">No network sockets open.</div>
               )}
             </div>
           </div>

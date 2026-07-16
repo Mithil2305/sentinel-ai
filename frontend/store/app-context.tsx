@@ -376,6 +376,23 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   ]);
 
+  // Restore original fetch to bypass buggy browser fetch interceptors that break Next.js client-side navigation
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+        if (iframe.contentWindow && iframe.contentWindow.fetch) {
+          window.fetch = iframe.contentWindow.fetch.bind(window);
+        }
+        document.body.removeChild(iframe);
+      } catch (err) {
+        console.warn('Could not restore native fetch:', err);
+      }
+    }
+  }, []);
+
   // Log streaming emulation
   const logsStreamRef = useRef<boolean>(true);
   useEffect(() => {

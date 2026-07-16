@@ -5,13 +5,20 @@ import { useApp } from '@/store/app-context';
 import { useRouter } from 'next/navigation';
 import { 
   ShieldCheck, ShieldAlert, CheckSquare, Clock, HardDrive, 
-  Activity, ArrowUpRight, ArrowDownRight, RefreshCw, Sparkles, AlertTriangle
+  Activity, ArrowUpRight, Sparkles, TrendingDown, TrendingUp
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell
 } from 'recharts';
+
+// Import Reusable Design System Components
+import { PageHeader } from '@/components/ui/page-header';
+import { AIInsightCard } from '@/components/ui/ai-insight-card';
+import { StatusChip } from '@/components/ui/status-chip';
+import { ActionButton } from '@/components/ui/action-button';
+import { DataTable } from '@/components/ui/data-table';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -58,13 +65,13 @@ export default function DashboardPage() {
 
   // Chart Mock Data
   const threatHistoryData = [
-    { day: 'Mon', detected: 4, resolved: 3, auto: 2 },
-    { day: 'Tue', detected: 2, resolved: 2, auto: 1 },
-    { day: 'Wed', detected: 6, resolved: 5, auto: 4 },
-    { day: 'Thu', detected: 3, resolved: 3, auto: 2 },
-    { day: 'Fri', detected: 8, resolved: 6, auto: 5 },
-    { day: 'Sat', detected: 2, resolved: 2, auto: 2 },
-    { day: 'Sun', detected: totalThreats, resolved: resolvedToday, auto: 2 }
+    { day: 'Mon', detected: 4, resolved: 3 },
+    { day: 'Tue', detected: 2, resolved: 2 },
+    { day: 'Wed', detected: 6, resolved: 5 },
+    { day: 'Thu', detected: 3, resolved: 3 },
+    { day: 'Fri', detected: 8, resolved: 6 },
+    { day: 'Sat', detected: 2, resolved: 2 },
+    { day: 'Sun', detected: totalThreats, resolved: resolvedToday }
   ];
 
   const distributionData = [
@@ -75,14 +82,12 @@ export default function DashboardPage() {
     { name: 'Ransomware', value: 10, color: '#EC4899' }
   ];
 
-  // Dynamic security score based on threats and server conditions
+  // Dynamic security score
   const calculateSecurityScore = () => {
     let base = 98;
-    // Deduct for active threats
     base -= activeIncidents.filter(i => i.severity === 'critical').length * 10;
     base -= activeIncidents.filter(i => i.severity === 'high').length * 6;
     base -= activeIncidents.filter(i => i.severity === 'medium').length * 3;
-    // Deduct for pending approvals
     base -= pendingApprovalsCount * 2;
     return Math.max(12, base);
   };
@@ -90,152 +95,277 @@ export default function DashboardPage() {
   const securityScore = calculateSecurityScore();
 
   const getScoreStatus = (score: number) => {
-    if (score >= 90) return { label: 'Protected', color: 'text-success', bg: 'bg-success/10', border: 'border-success/30' };
-    if (score >= 70) return { label: 'At Risk', color: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/30' };
-    return { label: 'Critical compromised', color: 'text-critical', bg: 'bg-critical/10', border: 'border-critical/30' };
+    if (score >= 90) return { label: 'Protected', color: '#22C55E', ringColor: '#22C55E', badge: 'bg-success/10 text-success border-success/30' };
+    if (score >= 70) return { label: 'At Risk', color: '#F59E0B', ringColor: '#F59E0B', badge: 'bg-warning/10 text-warning border-warning/30' };
+    return { label: 'Critical Compromised', color: '#EF4444', ringColor: '#EF4444', badge: 'bg-critical/10 text-critical border-critical/30' };
   };
 
-  const statusStyle = getScoreStatus(securityScore);
+  const scoreStatus = getScoreStatus(securityScore);
+
+  // Metric cards data
+  const metrics = [
+    {
+      title: 'Protected Servers',
+      value: `${onlineServersCount}/${servers.length}`,
+      sub: '100% agent coverage',
+      icon: HardDrive,
+      color: '#3B82F6',
+      trend: null,
+    },
+    {
+      title: 'Active Threats',
+      value: totalThreats,
+      sub: 'Requiring review',
+      icon: ShieldAlert,
+      color: totalThreats > 0 ? '#EF4444' : '#22C55E',
+      trend: totalThreats > 0 ? 'up' : null,
+      trendLabel: totalThreats > 0 ? `+${totalThreats}` : 'Clear',
+    },
+    {
+      title: 'Resolved Today',
+      value: resolvedToday,
+      sub: 'Autonomous remediation',
+      icon: ShieldCheck,
+      color: '#22C55E',
+      trend: 'up',
+      trendLabel: '+12%',
+    },
+    {
+      title: 'Pending Approvals',
+      value: pendingApprovalsCount,
+      sub: 'Human-in-the-loop queue',
+      icon: CheckSquare,
+      color: pendingApprovalsCount > 0 ? '#F59E0B' : '#9CA3AF',
+      trend: pendingApprovalsCount > 0 ? 'warn' : null,
+      trendLabel: pendingApprovalsCount > 0 ? 'Action needed' : 'Secure',
+    },
+    {
+      title: 'Avg Response Time',
+      value: '280ms',
+      sub: 'Threat to containment',
+      icon: Clock,
+      color: '#3B82F6',
+      trend: 'down',
+      trendLabel: '-18%',
+    },
+  ];
+
+  // Table columns
+  const incidentColumns = [
+    { 
+      header: 'ID', 
+      accessor: (inc: any) => (
+        <span className="font-mono font-bold text-primary">{inc.id}</span>
+      ) 
+    },
+    { 
+      header: 'Threat Vector', 
+      accessor: (inc: any) => (
+        <span className="font-bold text-text group-hover:text-primary transition-colors text-small-text">
+          {inc.threatName}
+        </span>
+      ) 
+    },
+    { 
+      header: 'Server', 
+      accessor: (inc: any) => (
+        <span className="font-semibold text-muted">{inc.server}</span>
+      ) 
+    },
+    { 
+      header: 'Severity', 
+      accessor: (inc: any) => (
+        <StatusChip status={inc.severity} />
+      ) 
+    },
+    { 
+      header: 'Status', 
+      accessor: (inc: any) => (
+        <StatusChip status={inc.status === 'investigating' ? 'investigating' : inc.status === 'resolved' ? 'resolved' : 'critical'} />
+      ) 
+    },
+    { 
+      header: 'Detected', 
+      accessor: (inc: any) => (
+        <span className="font-mono text-caption text-muted">{inc.createdAt}</span>
+      ) 
+    },
+    { 
+      header: 'Action',
+      headerClassName: 'text-right',
+      className: 'text-right',
+      accessor: (inc: any) => inc.status !== 'resolved' ? (
+        <ActionButton 
+          variant="secondary" 
+          size="sm"
+          onClick={(e) => {
+            e.stopPropagation();
+            resolveIncident(inc.id);
+          }}
+        >
+          Resolve
+        </ActionButton>
+      ) : (
+        <span className="text-success font-bold text-xs uppercase">Resolved</span>
+      )
+    }
+  ];
 
   return (
-    <div className="flex flex-col gap-12 max-w-7xl mx-auto pb-20">
+    <div className="flex flex-col gap-8 max-w-7xl mx-auto pb-16">
       
-      {/* SECTION 1: HERO AI SECURITY POSTURE CARD */}
-      <motion.div 
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="glass-panel rounded-2xl p-10 md:p-12 glow-primary overflow-hidden relative border border-primary/20 shadow-xl"
-      >
-        {/* Glow absolute background accents */}
-        <div className="absolute top-1/2 left-12 -translate-y-1/2 w-64 h-64 rounded-full bg-primary/15 blur-[80px] pointer-events-none" />
-        <div className="absolute right-12 top-0 w-80 h-80 rounded-full bg-blue-500/10 blur-[100px] pointer-events-none" />
-        
-        <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-10 relative z-10">
-          <div className="flex flex-col sm:flex-row items-center gap-10 text-center sm:text-left">
-            {/* Score Ring */}
-            <div className="relative flex items-center justify-center h-32 w-32 rounded-full border border-border/80 bg-background/90 shadow-inner flex-shrink-0">
-              <svg className="w-28 h-28 transform -rotate-90">
-                <circle cx="56" cy="56" r="46" stroke="#1F2937" strokeWidth="9" fill="transparent" />
-                <motion.circle 
-                  cx="56" cy="56" r="46" 
-                  stroke={securityScore >= 90 ? '#22C55E' : securityScore >= 70 ? '#F59E0B' : '#EF4444'} 
-                  strokeWidth="9" 
-                  fill="transparent" 
-                  strokeDasharray="289"
-                  animate={{ strokeDashoffset: 289 - (289 * securityScore) / 100 }}
-                  transition={{ duration: 1.2, ease: 'easeOut' }}
-                />
-              </svg>
-              <div className="absolute flex flex-col items-center">
-                <span className="text-3xl font-black tracking-tight text-text">{securityScore}</span>
-                <span className="text-xs font-extrabold text-muted uppercase tracking-wider">Score</span>
-              </div>
-            </div>
-            
-            <div className="space-y-3.5">
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
-                <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Security Posture Status:</h1>
-                <span className={`px-4.5 py-1.5 rounded-lg text-xs font-black ${statusStyle.bg} ${statusStyle.color} ${statusStyle.border} border uppercase tracking-wider shadow-sm`}>
-                  {statusStyle.label}
-                </span>
-              </div>
-              <p className="text-sm md:text-base text-muted max-w-xl leading-relaxed font-medium">
-                {securityScore >= 90 
-                  ? 'All autonomous policies are fully operational. Host integrity check verification completes cleanly without unexpected root escalations.'
-                  : 'Action recommended: Resolve pending high-entropy cryptographic payloads to return to normal posture metrics.'
-                }
-              </p>
-            </div>
-          </div>
+      {/* Page Header */}
+      <PageHeader 
+        title="Security Operations Center Overview" 
+        description="Real-time monitoring panel displaying autonomous agent telemetry and self-healing active mitigations."
+        icon={Activity}
+      />
 
-          <div className="flex flex-col sm:flex-row gap-6 w-full xl:w-auto flex-shrink-0">
-            <button 
-              onClick={() => router.push('/approvals')}
-              className="flex items-center justify-center gap-3 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-text hover:bg-primary/95 transition-all shadow-lg shadow-primary/25 cursor-pointer"
-            >
-              <CheckSquare className="h-4.5 w-4.5" />
-              <span>Review Approvals ({pendingApprovalsCount})</span>
-            </button>
-            <button 
-              onClick={() => router.push('/monitoring')}
-              className="flex items-center justify-center gap-3 rounded-xl border border-border bg-card/80 hover:bg-border/60 px-6 py-3.5 text-sm font-bold text-text transition-all cursor-pointer shadow-sm"
-            >
-              <Activity className="h-4.5 w-4.5 text-primary" />
-              <span>Live Streams</span>
-            </button>
-          </div>
-        </div>
-      </motion.div>
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*  BENTO GRID — Row 1: Score card + Metric Cards        */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '20px' }}>
 
-      {/* SECTION 2: METRICS CARDS */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
-        {[
-          { title: 'Protected Servers', val: `${onlineServersCount}/${servers.length}`, sub: '100% agent coverage', icon: HardDrive, trend: 'stable', color: 'text-primary' },
-          { title: 'Active Threats', val: totalThreats, sub: 'Requiring review', icon: ShieldAlert, trend: totalThreats > 0 ? 'up' : 'stable', trendVal: totalThreats > 0 ? `+${totalThreats}` : '', color: totalThreats > 0 ? 'text-critical' : 'text-success' },
-          { title: 'Resolved Today', val: resolvedToday, sub: 'Autonomous fix active', icon: ShieldCheck, trend: 'up', trendVal: '+12%', color: 'text-success' },
-          { title: 'Pending Approvals', val: pendingApprovalsCount, sub: 'Human-in-the-loop queue', icon: CheckSquare, trend: pendingApprovalsCount > 0 ? 'warn' : 'stable', trendVal: pendingApprovalsCount > 0 ? 'Action' : 'Secure', color: pendingApprovalsCount > 0 ? 'text-warning' : 'text-muted' },
-          { title: 'Avg Response Time', val: '280ms', sub: 'Threat to containment', icon: Clock, trend: 'down', trendVal: '-18%', color: 'text-primary' },
-        ].map((c, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 + i * 0.05 }}
-            className="glass-panel glass-panel-hover rounded-2xl p-6 flex flex-col justify-between h-40 relative group border border-border/80 shadow-md"
+        {/* ── CELL A: Security Posture Score Ring (cols 1-4) ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          style={{ gridColumn: '1 / span 4' }}
+          className="glass-panel rounded-card p-6 border border-primary/20 glow-primary relative overflow-hidden flex flex-col items-center justify-center gap-4"
+        >
+          {/* Background glow blob */}
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 70%)' }} />
+
+          {/* Score Ring */}
+          <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            className="flex-shrink-0"
           >
-            <div className="flex items-start justify-between">
-              <span className="text-sm font-bold text-muted uppercase tracking-wider">{c.title}</span>
-              <c.icon className={`h-5 w-5 ${c.color}`} />
+            <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}>
+              <circle cx="64" cy="64" r="54" stroke="#1F2937" strokeWidth="10" fill="transparent" />
+              <motion.circle
+                cx="64" cy="64" r="54"
+                stroke={scoreStatus.ringColor}
+                strokeWidth="10"
+                fill="transparent"
+                strokeDasharray="339.3"
+                initial={{ strokeDashoffset: 339.3 }}
+                animate={{ strokeDashoffset: 339.3 - (339.3 * securityScore) / 100 }}
+                transition={{ duration: 1.2, ease: 'easeOut' }}
+                strokeLinecap="round"
+              />
+            </svg>
+            <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <span className="text-display font-bold tracking-tight text-text leading-none">{securityScore}</span>
+              <span className="text-caption font-bold text-muted uppercase tracking-wider" style={{ marginTop: 2 }}>Score</span>
             </div>
-            
-            <div className="my-2">
-              <span className="text-3xl lg:text-4xl font-black tracking-tight text-text">{c.val}</span>
-            </div>
+          </div>
 
-            <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/30">
-              <span className="text-xs text-muted font-medium truncate pr-1">{c.sub}</span>
-              {c.trendVal && (
-                <span className={`text-xs font-extrabold px-2.5 py-1 rounded-md flex items-center gap-1 flex-shrink-0 ${
-                  c.trend === 'up' 
-                    ? 'bg-success/15 text-success border border-success/30' 
-                    : c.trend === 'down' 
-                      ? 'bg-primary/15 text-primary border border-primary/30'
-                      : c.trend === 'warn'
-                        ? 'bg-warning/15 text-warning border border-warning/30 animate-pulse'
-                        : 'bg-border/60 text-muted'
-                }`}>
-                  {c.trend === 'up' && <ArrowUpRight className="h-3 w-3" />}
-                  {c.trend === 'down' && <ArrowDownRight className="h-3 w-3" />}
-                  {c.trendVal}
-                </span>
+          {/* Status label + description */}
+          <div className="text-center space-y-2 relative z-10">
+            <span className={`inline-block px-3 py-1 rounded-badge text-[11px] font-bold border uppercase tracking-wider ${scoreStatus.badge}`}>
+              {scoreStatus.label}
+            </span>
+            <p className="text-caption text-muted leading-relaxed font-normal max-w-[200px]">
+              {securityScore >= 90
+                ? 'All autonomous policies are fully operational.'
+                : 'Resolve pending threats to restore normal posture.'}
+            </p>
+          </div>
+
+          {/* Quick action buttons */}
+          <div className="flex flex-col gap-2 w-full relative z-10">
+            <ActionButton
+              variant="primary"
+              onClick={() => router.push('/approvals')}
+              className="flex items-center justify-center gap-2 w-full"
+            >
+              <CheckSquare className="h-3.5 w-3.5" />
+              <span>Review Approvals ({pendingApprovalsCount})</span>
+            </ActionButton>
+            <ActionButton
+              variant="secondary"
+              onClick={() => router.push('/monitoring')}
+              className="flex items-center justify-center gap-2 w-full"
+            >
+              <Activity className="h-3.5 w-3.5 text-primary" />
+              <span>Live Streams</span>
+            </ActionButton>
+          </div>
+        </motion.div>
+
+        {/* ── CELLS B–F: 5 Metric Cards filling cols 5-12 (2 rows × 4 cols each) ── */}
+        {metrics.map((m, i) => {
+          const Icon = m.icon;
+          // Explicit column placement within the 12-col grid:
+          // Row 1: cards 0,1,2 → cols 5-6, 7-8, 9-10  (span 2 each)
+          // Row 2: cards 3,4   → cols 5-8, 9-12        (span 4 each, wider for balance)
+          const colMap = [
+            '5 / span 3',  // Card 0
+            '8 / span 3',  // Card 1
+            '11 / span 2', // Card 2
+            '5 / span 4',  // Card 3
+            '9 / span 4',  // Card 4
+          ];
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: i * 0.06 }}
+              style={{ gridColumn: colMap[i], alignSelf: 'stretch' }}
+              className="glass-panel rounded-card p-5 border border-border/80 flex flex-col gap-3"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-caption font-bold text-muted uppercase tracking-wider">{m.title}</span>
+                <div className="p-2 rounded-input" style={{ background: `${m.color}18` }}>
+                  <Icon style={{ width: 14, height: 14, color: m.color }} />
+                </div>
+              </div>
+              <div>
+                <span className="text-2xl font-bold" style={{ color: m.color }}>{m.value}</span>
+                <p className="text-caption text-muted mt-1 font-normal">{m.sub}</p>
+              </div>
+              {m.trendLabel && (
+                <div className="flex items-center gap-1.5">
+                  {m.trend === 'up' && <TrendingUp style={{ width: 11, height: 11, color: '#EF4444' }} />}
+                  {m.trend === 'down' && <TrendingDown style={{ width: 11, height: 11, color: '#22C55E' }} />}
+                  {m.trend === 'warn' && <TrendingUp style={{ width: 11, height: 11, color: '#F59E0B' }} />}
+                  <span className="text-[10px] font-bold" style={{
+                    color: m.trend === 'down' ? '#22C55E' : m.trend === 'up' ? '#EF4444' : m.trend === 'warn' ? '#F59E0B' : '#9CA3AF'
+                  }}>{m.trendLabel}</span>
+                </div>
               )}
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
+
       </div>
 
-      {/* CHARTS CONTAINER (SECTION 3 & SECTION 4) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-        
-        {/* Threat Activity Area Chart */}
-        <div className="lg:col-span-8 glass-panel rounded-2xl p-8 md:p-10 flex flex-col justify-between h-[480px] relative border border-border/80 shadow-md">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border pb-5 mb-5 gap-4">
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*  BENTO GRID — Row 2: Charts                          */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '20px' }}>
+
+        {/* ── Threat Activity Area Chart (cols 1-8) ── */}
+        <div style={{ gridColumn: '1 / span 8', height: '360px' }}
+          className="glass-panel rounded-card p-6 border border-border/80 shadow-md flex flex-col"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border pb-4 mb-5 gap-3 flex-shrink-0">
             <div>
-              <h3 className="font-extrabold text-base text-text uppercase tracking-wider">Threat Activity Timeline</h3>
-              <p className="text-sm text-muted mt-1 font-medium">Detections vs Auto-remediations (7-day window)</p>
+              <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Threat Activity Timeline</h3>
+              <p className="text-caption text-muted mt-1 font-normal">Detections vs resolutions — 7-day window</p>
             </div>
-            <div className="flex items-center gap-5 text-sm font-bold">
-              <span className="flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-critical shadow-sm shadow-critical" /> Detected</span>
-              <span className="flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-success shadow-sm shadow-success" /> Resolved</span>
-              <span className="flex items-center gap-2"><span className="h-3 w-3 rounded-full bg-primary shadow-sm shadow-primary" /> Auto-Healing</span>
+            <div className="flex items-center gap-4 text-caption font-bold">
+              <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-badge bg-critical" /> Detected</span>
+              <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-badge bg-success" /> Resolved</span>
             </div>
           </div>
-          
-          <div className="flex-1 w-full min-h-[300px]">
+          <div className="flex-1" style={{ minHeight: 0 }}>
             {mounted ? (
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={threatHistoryData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                <AreaChart data={threatHistoryData} margin={{ top: 8, right: 8, left: -22, bottom: 0 }}>
                   <defs>
                     <linearGradient id="detectedGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#EF4444" stopOpacity={0.25}/>
@@ -247,184 +377,111 @@ export default function DashboardPage() {
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" vertical={false} />
-                  <XAxis dataKey="day" stroke="#9CA3AF" fontSize={11} tickLine={false} />
-                  <YAxis stroke="#9CA3AF" fontSize={11} tickLine={false} />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: '#111827', borderColor: '#1F2937', fontSize: 12, borderRadius: 8, padding: '12px' }} 
+                  <XAxis dataKey="day" stroke="#9CA3AF" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#9CA3AF" fontSize={10} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#111827', borderColor: '#1F2937', fontSize: 12, borderRadius: 8, padding: '10px' }}
                     labelStyle={{ fontWeight: 'bold', color: '#F9FAFB' }}
                   />
-                  <Area type="monotone" dataKey="detected" stroke="#EF4444" strokeWidth={2.5} fillOpacity={1} fill="url(#detectedGrad)" />
-                  <Area type="monotone" dataKey="resolved" stroke="#22C55E" strokeWidth={2.5} fillOpacity={1} fill="url(#resolvedGrad)" />
+                  <Area type="monotone" dataKey="detected" stroke="#EF4444" strokeWidth={2} fillOpacity={1} fill="url(#detectedGrad)" />
+                  <Area type="monotone" dataKey="resolved" stroke="#22C55E" strokeWidth={2} fillOpacity={1} fill="url(#resolvedGrad)" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="w-full h-full animate-pulse bg-border/20 rounded-xl" />
+              <div className="w-full h-full animate-pulse bg-border/20 rounded-card" />
             )}
           </div>
         </div>
 
-        {/* Threat Distribution Donut Chart */}
-        <div className="lg:col-span-4 glass-panel rounded-2xl p-8 md:p-10 flex flex-col justify-between h-[480px] border border-border/80 shadow-md">
-          <div className="border-b border-border pb-5 mb-5">
-            <h3 className="font-extrabold text-base text-text uppercase tracking-wider">Threat Distribution</h3>
-            <p className="text-sm text-muted mt-1 font-medium">By attack classification categories</p>
+        {/* ── Threat Distribution Donut (cols 9-12) ── */}
+        <div style={{ gridColumn: '9 / span 4' }}
+          className="glass-panel rounded-card p-6 border border-border/80 shadow-md flex flex-col"
+        >
+          <div className="border-b border-border pb-4 mb-4 flex-shrink-0">
+            <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Threat Distribution</h3>
+            <p className="text-caption text-muted mt-1 font-normal">By attack classification</p>
           </div>
-          
-          <div className="flex-1 flex items-center justify-center min-h-[220px] relative">
+
+          <div style={{ position: 'relative', height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {mounted ? (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <PieChart>
                   <Pie
                     data={distributionData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={75}
-                    outerRadius={105}
-                    paddingAngle={4}
+                    innerRadius={55}
+                    outerRadius={80}
+                    paddingAngle={3}
                     dataKey="value"
                   >
                     {distributionData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#111827', borderColor: '#1F2937', fontSize: 12, borderRadius: 8 }} />
+                  <Tooltip contentStyle={{ backgroundColor: '#111827', borderColor: '#1F2937', fontSize: 11, borderRadius: 8 }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="w-32 h-32 rounded-full border border-border border-t-transparent animate-spin" />
+              <div className="w-24 h-24 rounded-badge border border-border border-t-transparent animate-spin" />
             )}
-            {/* Center label */}
-            <div className="absolute flex flex-col items-center">
-              <span className="text-xs font-bold text-muted uppercase">Total Vectors</span>
-              <span className="text-3xl font-black text-text">984</span>
+            {/* Center label — uses inline style positioning to avoid absolute/relative conflicts */}
+            <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none' }}>
+              <span className="text-[10px] font-bold text-muted uppercase tracking-wider">Vectors</span>
+              <span className="text-2xl font-bold text-text leading-none" style={{ marginTop: 2 }}>984</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border/40 text-sm font-semibold">
+          <div className="grid grid-cols-1 gap-1.5 pt-4 border-t border-border/40 text-caption font-bold mt-auto">
             {distributionData.map((d, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full flex-shrink-0" style={{ backgroundColor: d.color }} />
-                <span className="text-muted truncate">{d.name} ({d.value}%)</span>
+              <div key={i} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-badge flex-shrink-0" style={{ backgroundColor: d.color }} />
+                  <span className="text-muted text-[10px]">{d.name}</span>
+                </div>
+                <span className="font-mono text-[10px]" style={{ color: d.color }}>{d.value}%</span>
               </div>
             ))}
           </div>
         </div>
+
       </div>
 
-      {/* SECTION 5: RECENT INCIDENTS TABLE */}
-      <div className="glass-panel rounded-2xl p-8 md:p-10 border border-border/80 shadow-md">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border pb-5 mb-6 gap-4">
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*  Row 3: Active Threats Table                         */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <div className="glass-panel rounded-card border border-border/80 overflow-hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-border gap-3">
           <div>
-            <h3 className="font-extrabold text-base text-text uppercase tracking-wider">Active Threats Queue</h3>
-            <p className="text-sm text-muted mt-1.5 font-medium">Real-time incident response log. Click to review action details.</p>
+            <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Active Threats Queue</h3>
+            <p className="text-caption text-muted mt-1 font-normal">Real-time incident response log. Click to review action details.</p>
           </div>
-          <button 
+          <button
             onClick={() => router.push('/incidents')}
-            className="text-sm font-bold text-primary hover:underline flex items-center gap-2 self-start sm:self-auto cursor-pointer"
+            className="text-caption font-bold text-primary hover:underline flex items-center gap-2 self-start sm:self-auto cursor-pointer flex-shrink-0"
           >
             <span>View All Incidents</span>
-            <ArrowUpRight className="h-4.5 w-4.5" />
+            <ArrowUpRight className="h-3.5 w-3.5" />
           </button>
         </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
-            <thead>
-              <tr className="border-b border-border text-muted font-extrabold text-xs uppercase tracking-wider">
-                <th className="py-4.5 px-4">ID</th>
-                <th className="py-4.5 px-4">Threat Vector</th>
-                <th className="py-4.5 px-4">Server</th>
-                <th className="py-4.5 px-4">Severity</th>
-                <th className="py-4.5 px-4">Status</th>
-                <th className="py-4.5 px-4">Detected</th>
-                <th className="py-4.5 px-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/40">
-              {incidents.slice(0, 4).map((inc) => (
-                <tr 
-                  key={inc.id}
-                  onClick={() => router.push('/incidents')}
-                  className="hover:bg-border/20 cursor-pointer transition-colors group"
-                >
-                  <td className="py-5 px-4 font-mono font-bold text-primary text-xs">{inc.id}</td>
-                  <td className="py-5 px-4 font-bold text-text group-hover:text-primary transition-colors text-sm">{inc.threatName}</td>
-                  <td className="py-5 px-4 font-medium text-muted text-sm">{inc.server}</td>
-                  <td className="py-5 px-4">
-                    <span className={`px-3 py-1 rounded-md text-xs font-black uppercase border tracking-wider ${
-                      inc.severity === 'critical' 
-                        ? 'bg-critical/15 text-critical border-critical/30' 
-                        : inc.severity === 'high'
-                          ? 'bg-warning/15 text-warning border-warning/30'
-                          : 'bg-primary/15 text-primary border-primary/30'
-                    }`}>
-                      {inc.severity}
-                    </span>
-                  </td>
-                  <td className="py-5 px-4">
-                    <span className="flex items-center gap-2 font-medium text-sm">
-                      <span className={`h-2.5 w-2.5 rounded-full ${
-                        inc.status === 'resolved' 
-                          ? 'bg-success shadow-sm shadow-success' 
-                          : inc.status === 'investigating'
-                            ? 'bg-warning shadow-sm shadow-warning'
-                            : 'bg-critical animate-pulse shadow-sm shadow-critical'
-                      }`} />
-                      <span className="capitalize">{inc.status}</span>
-                    </span>
-                  </td>
-                  <td className="py-5 px-4 text-muted text-xs font-mono">{inc.createdAt}</td>
-                  <td className="py-5 px-4 text-right">
-                    {inc.status !== 'resolved' ? (
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          resolveIncident(inc.id);
-                        }}
-                        className="px-3.5 py-2 rounded-lg bg-success/15 hover:bg-success/25 border border-success/35 text-success text-xs font-bold transition-all cursor-pointer shadow-sm"
-                      >
-                        Resolve
-                      </button>
-                    ) : (
-                      <span className="text-xs text-success font-bold">Resolved</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          data={incidents.slice(0, 4)}
+          columns={incidentColumns}
+          onRowClick={() => router.push('/incidents')}
+        />
       </div>
 
-      {/* SECTION 6: AI SECURITY SUMMARY */}
-      <motion.div 
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="glass-panel rounded-2xl p-8 md:p-10 border border-primary/25 glow-primary relative overflow-hidden shadow-lg"
-      >
-        <div className="absolute top-0 right-0 p-4 text-primary/10 pointer-events-none">
-          <Sparkles className="h-24 w-24" />
-        </div>
-        <div className="flex items-start gap-6">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/20 text-primary border border-primary/35 flex-shrink-0 shadow-md">
-            <Sparkles className="h-5.5 w-5.5" />
-          </div>
-          <div className="space-y-3">
-            <h4 className="font-extrabold text-sm text-text uppercase tracking-wider flex items-center gap-2">
-              <span>SentinelAI Daily Operations Insight</span>
-              <span className="bg-success/20 text-success text-xs px-2.5 py-1 rounded font-black uppercase tracking-wider border border-success/30">AI Generated</span>
-            </h4>
-            <p className="text-sm md:text-base text-muted leading-relaxed max-w-4xl font-medium">
-              &ldquo;Today, I ingested and analyzed <strong className="text-text">1,248,912 events</strong> across production subnets. 
-              <strong className="text-text"> 3 threat vectors</strong> were identified. 
-              <strong className="text-text"> 2 incidents</strong> (credential abuse on `staging-api-01` and DNS tunneling on `prod-web-01`) were autonomously remediated successfully. 
-              No lateral movements or unauthorized active directory replication events were detected. 
-              System security score remains healthy at <strong className="text-text">92/100</strong>. Recommendation: Execute containment approval for `corp-dc-01` ransomware behavior.&rdquo;
-            </p>
-          </div>
-        </div>
-      </motion.div>
+      {/* ═══════════════════════════════════════════════════════ */}
+      {/*  Row 4: AI Insight Card                              */}
+      {/* ═══════════════════════════════════════════════════════ */}
+      <AIInsightCard title="SentinelAI Daily Operations Insight">
+        &ldquo;Today, I ingested and analyzed <strong className="text-text font-bold">1,248,912 events</strong> across production subnets. 
+        <strong className="text-text font-bold"> 3 threat vectors</strong> were identified. 
+        <strong className="text-text font-bold"> 2 incidents</strong> (credential abuse on `staging-api-01` and DNS tunneling on `prod-web-01`) were autonomously remediated successfully. 
+        No lateral movements or unauthorized active directory replication events were detected. 
+        System security score remains healthy at <strong className="text-text font-bold">92/100</strong>. Recommendation: Execute containment approval for `corp-dc-01` ransomware behavior.&rdquo;
+      </AIInsightCard>
+
     </div>
   );
 }
