@@ -74,27 +74,27 @@ export default function ReportsPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto pb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="max-w-7xl mx-auto pb-16 grid grid-cols-1 md:grid-cols-3 gap-8">
       
       {/* COLUMN 1 & 2: REPORT GENERATOR & RECENT GENERATED */}
-      <div className="md:col-span-2 space-y-6">
+      <div className="md:col-span-2 space-y-8">
         
         {/* REPORT GENERATOR BOX */}
-        <div className="glass-panel rounded-xl p-5 relative overflow-hidden">
-          <div className="border-b border-border pb-3 mb-4">
-            <h1 className="text-sm font-extrabold tracking-tight uppercase text-text">SOC Audit Report Builder</h1>
-            <p className="text-[10px] text-muted mt-0.5">Generate verified security compliance and posture logs</p>
+        <div className="glass-panel rounded-xl p-7 relative overflow-hidden">
+          <div className="border-b border-border pb-5 mb-6">
+            <h1 className="text-base font-extrabold tracking-tight uppercase text-text">SOC Audit Report Builder</h1>
+            <p className="text-xs text-muted mt-1">Generate verified security compliance and posture logs</p>
           </div>
 
-          <div className="space-y-4 text-xs">
+          <div className="space-y-6 text-sm">
             {/* Report Type */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="font-bold text-[10px] uppercase text-muted block mb-1.5">Report Category</label>
+                <label className="font-bold text-xs uppercase text-muted block mb-2">Report Category</label>
                 <select
                   value={reportType}
                   onChange={(e) => setReportType(e.target.value)}
-                  className="w-full bg-background border border-border rounded-lg px-3 py-2 text-text focus:outline-none"
+                  className="w-full bg-background border border-border rounded-lg px-3.5 py-2.5 text-text focus:outline-none cursor-pointer"
                 >
                   <option value="weekly">Weekly SOC Summary</option>
                   <option value="monthly">Monthly Asset Audit</option>
@@ -105,11 +105,11 @@ export default function ReportsPage() {
 
               {/* Server Scope */}
               <div>
-                <label className="font-bold text-[10px] uppercase text-muted block mb-1.5">Server Scope</label>
+                <label className="font-bold text-xs uppercase text-muted block mb-2">Server Scope</label>
                 <select
                   value={serverScope}
                   onChange={(e) => setServerScope(e.target.value)}
-                  className="w-full bg-background border border-border rounded-lg px-3 py-2 text-text focus:outline-none"
+                  className="w-full bg-background border border-border rounded-lg px-3.5 py-2.5 text-text focus:outline-none cursor-pointer"
                 >
                   <option value="all">All Infrastructure Nodes</option>
                   <option value="prod">Production Nodes Only</option>
@@ -119,19 +119,19 @@ export default function ReportsPage() {
             </div>
 
             {/* Include AI Insights Toggle */}
-            <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-background/30">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-primary" />
+            <div className="flex items-center justify-between p-4.5 rounded-lg border border-border bg-background/30">
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-4.5 w-4.5 text-primary" />
                 <div>
-                  <span className="font-bold text-text block">Include SentinelAI Summary</span>
-                  <span className="text-[10px] text-muted mt-0.5">Embeds LLM-driven root cause and remediation metrics</span>
+                  <span className="font-bold text-text text-sm block">Include SentinelAI Summary</span>
+                  <span className="text-xs text-muted mt-0.5">Embeds LLM-driven root cause and remediation metrics</span>
                 </div>
               </div>
               <input 
                 type="checkbox"
                 checked={includeAi}
                 onChange={(e) => setIncludeAi(e.target.checked)}
-                className="h-4 w-4 cursor-pointer accent-primary"
+                className="h-4.5 w-4.5 cursor-pointer accent-primary"
               />
             </div>
 
@@ -139,7 +139,7 @@ export default function ReportsPage() {
             <button
               onClick={handleGenerate}
               disabled={generating}
-              className="w-full py-2.5 rounded-lg bg-primary hover:bg-primary/95 text-text font-bold text-xs transition-all cursor-pointer shadow-lg shadow-primary/10 flex items-center justify-center gap-1.5 disabled:opacity-50"
+              className="w-full py-3.5 rounded-lg bg-primary hover:bg-primary/95 text-text font-bold text-xs transition-all cursor-pointer shadow-lg shadow-primary/10 flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {generating ? <RefreshCw className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
               <span>{generating ? 'Processing SOC Engine...' : 'Compile Security Report'}</span>
@@ -157,7 +157,7 @@ export default function ReportsPage() {
               >
                 <RefreshCw className="h-10 w-10 text-primary animate-spin mb-4" />
                 <span className="text-xs font-bold text-text uppercase tracking-wider animate-pulse">Generating Report Archive</span>
-                <p className="text-[10px] text-muted mt-2 font-mono">{generationStep}</p>
+                <p className="text-xs text-muted mt-2.5 font-mono">{generationStep}</p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -170,37 +170,37 @@ export default function ReportsPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="glass-panel rounded-xl p-5 border border-success/30 bg-success/5"
+              className="glass-panel rounded-xl p-7 border border-success/30 bg-success/5"
             >
               <div className="flex items-start gap-4">
-                <div className="h-8 w-8 rounded bg-success/15 text-success flex items-center justify-center border border-success/30">
+                <div className="h-9 w-9 rounded bg-success/15 text-success flex items-center justify-center border border-success/30">
                   <CheckCircle className="h-5 w-5" />
                 </div>
                 <div className="flex-1 text-xs text-muted">
                   <div className="flex justify-between items-center">
-                    <span className="font-bold text-text uppercase text-[9px] tracking-wider text-success">Generation Successful</span>
-                    <span className="font-mono text-[10px]">{generatedReport.id}</span>
+                    <span className="font-bold text-xs uppercase tracking-wider text-success">Generation Successful</span>
+                    <span className="font-mono text-xs">{generatedReport.id}</span>
                   </div>
-                  <h3 className="font-bold text-sm text-text mt-1.5">{generatedReport.title}</h3>
-                  <div className="flex items-center gap-3 text-[10px] text-muted mt-1.5">
+                  <h3 className="font-bold text-base text-text mt-2">{generatedReport.title}</h3>
+                  <div className="flex items-center gap-3 text-xs text-muted mt-2">
                     <span>Category: {generatedReport.type}</span>
                     <span>•</span>
                     <span>Size: {generatedReport.size}</span>
                   </div>
 
-                  <div className="flex gap-2 mt-4">
+                  <div className="flex gap-3 mt-5">
                     <button
                       onClick={() => handleDownload(generatedReport.title)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-success hover:bg-success/90 text-text text-[10px] font-bold cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded bg-success hover:bg-success/90 text-text text-xs font-bold cursor-pointer"
                     >
-                      <Download className="h-3.5 w-3.5" />
+                      <Download className="h-4 w-4" />
                       <span>Download Archive</span>
                     </button>
                     <button
                       onClick={() => alert(`Share link copied to clipboard!`)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded border border-border bg-card hover:bg-border text-muted text-[10px] font-bold cursor-pointer"
+                      className="flex items-center gap-2 px-4 py-2.5 rounded border border-border bg-card hover:bg-border text-muted text-xs font-bold cursor-pointer"
                     >
-                      <Share2 className="h-3.5 w-3.5" />
+                      <Share2 className="h-4 w-4" />
                       <span>Share Link</span>
                     </button>
                   </div>
@@ -212,40 +212,39 @@ export default function ReportsPage() {
       </div>
 
       {/* COLUMN 3: HISTORICAL ARCHIVE LIST */}
-      <div className="glass-panel rounded-xl p-5 flex flex-col h-[400px]">
-        <div className="border-b border-border pb-3 mb-4 flex-shrink-0">
-          <span className="text-xs font-bold text-text uppercase tracking-wider block">Historical Reports</span>
-          <p className="text-[10px] text-muted mt-0.5">Precompiled compliance audit logs</p>
+      <div className="glass-panel rounded-xl p-7 flex flex-col h-[480px]">
+        <div className="border-b border-border pb-5 mb-6 flex-shrink-0">
+          <span className="text-sm font-bold text-text uppercase tracking-wider block">Historical Reports</span>
+          <p className="text-xs text-muted mt-1">Precompiled compliance audit logs</p>
         </div>
 
-        <div className="flex-1 overflow-y-auto space-y-3.5">
+        <div className="flex-1 overflow-y-auto space-y-4">
           {reportsList.map((rep) => (
-            <div key={rep.id} className="p-3 rounded-lg bg-background/55 border border-border text-[11px] hover:border-primary/20 transition-all flex flex-col justify-between h-28">
+            <div key={rep.id} className="p-4 rounded-lg bg-background/55 border border-border text-xs hover:border-primary/20 transition-all flex flex-col justify-between h-32">
               <div>
-                <div className="flex items-center justify-between text-[9px] text-muted font-mono font-bold">
+                <div className="flex items-center justify-between text-xs text-muted font-mono font-bold">
                   <span>{rep.id}</span>
                   <span className="text-primary">{rep.type.toUpperCase()}</span>
                 </div>
-                <h3 className="font-bold text-text leading-tight mt-1 text-left truncate max-w-[200px]">
+                <h3 className="font-bold text-text text-sm leading-tight mt-1.5 text-left truncate max-w-[220px]">
                   {rep.title}
                 </h3>
               </div>
 
-              <div className="flex items-center justify-between border-t border-border/30 pt-2 mt-2">
-                <span className="text-[9px] text-muted">{rep.date} ({rep.size})</span>
+              <div className="flex items-center justify-between border-t border-border/30 pt-3.5 mt-3.5">
+                <span className="text-xs text-muted">{rep.date} ({rep.size})</span>
                 <button
                   onClick={() => handleDownload(rep.title)}
-                  className="p-1 rounded hover:bg-border text-muted hover:text-text transition-colors cursor-pointer"
+                  className="p-1.5 rounded hover:bg-border text-muted hover:text-text transition-colors cursor-pointer"
                   title="Download File"
                 >
-                  <Download className="h-3.5 w-3.5" />
+                  <Download className="h-4 w-4" />
                 </button>
               </div>
             </div>
           ))}
         </div>
       </div>
-
     </div>
   );
 }

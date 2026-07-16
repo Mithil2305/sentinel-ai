@@ -6,6 +6,12 @@ export function useWebSocket(onMessageCallback?: (eventData: any) => void) {
   const [isConnected, setIsConnected] = useState(false);
   const socketRef = useRef<WebSocket | null>(null);
 
+  const callbackRef = useRef(onMessageCallback);
+  
+  useEffect(() => {
+    callbackRef.current = onMessageCallback;
+  }, [onMessageCallback]);
+
   useEffect(() => {
     const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000/ws';
     const ws = new WebSocket(wsUrl);
@@ -18,8 +24,8 @@ export function useWebSocket(onMessageCallback?: (eventData: any) => void) {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (onMessageCallback) {
-          onMessageCallback(data);
+        if (callbackRef.current) {
+          callbackRef.current(data);
         }
       } catch (err) {
         console.error('Failed to parse WebSocket message', err);

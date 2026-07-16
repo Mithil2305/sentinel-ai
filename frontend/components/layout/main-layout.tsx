@@ -121,7 +121,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 space-y-1 p-2 py-4">
+        <nav className="flex-1 space-y-3.5 p-4 py-6">
           {sidebarItems.map((item) => {
             const Icon = item.icon;
             const isActive = selectedPage === item.name;
@@ -129,10 +129,10 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
               <button
                 key={item.name}
                 onClick={() => navigateTo(item.name, item.route)}
-                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all group relative ${
+                className={`flex w-full items-center gap-4 rounded-xl px-4 py-3.5 text-sm font-semibold transition-all group relative ${
                   isActive 
-                    ? 'bg-primary/10 text-primary border border-primary/20' 
-                    : 'text-muted hover:bg-border/30 hover:text-text'
+                    ? 'bg-primary/15 text-primary border border-primary/30 shadow-sm' 
+                    : 'text-muted hover:bg-border/40 hover:text-text'
                 }`}
               >
                 <Icon className={`h-5 w-5 flex-shrink-0 ${isActive ? 'text-primary' : 'group-hover:text-primary transition-colors'}`} />
@@ -157,21 +157,21 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
         </nav>
 
         {/* Sidebar Footer toggle */}
-        <div className="p-3 border-t border-border flex items-center justify-between">
+        <div className="p-3 border-t border-border flex items-center justify-between overflow-hidden">
           {!isSidebarCollapsed && (
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-full bg-border flex items-center justify-center">
-                <User className="h-4 w-4 text-muted" />
+            <div className="flex items-center gap-2.5 min-w-0 pr-1">
+              <div className="h-8 w-8 rounded-full bg-primary/20 border border-primary/30 flex-shrink-0 flex items-center justify-center text-primary font-bold text-xs">
+                SL
               </div>
-              <div className="text-left">
-                <div className="text-xs font-semibold text-text">SecOps Lead</div>
-                <div className="text-[10px] text-muted">operator@sentinel.ai</div>
+              <div className="text-left min-w-0 flex-1">
+                <div className="text-xs font-semibold text-text truncate">SecOps Lead</div>
+                <div className="text-[10px] text-muted truncate">operator@sentinel.ai</div>
               </div>
             </div>
           )}
           <button 
             onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-            className="p-1.5 rounded-lg border border-border bg-background hover:bg-border text-muted hover:text-text transition-colors mx-auto"
+            className="p-1.5 rounded-lg border border-border bg-background hover:bg-border text-muted hover:text-text transition-colors flex-shrink-0"
           >
             {isSidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </button>
@@ -182,24 +182,24 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
       <div className="flex-1 flex flex-col min-w-0 relative">
         
         {/* 2. HEADER */}
-        <header className="h-16 border-b border-border bg-card/25 backdrop-blur-md flex items-center justify-between px-6 z-20">
+        <header className="h-20 border-b border-border bg-card/40 backdrop-blur-xl flex items-center justify-between px-10 z-20 gap-8 flex-shrink-0">
           
           {/* Status Indicator & Global Search Button */}
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border border-success/30 bg-success/5 text-success">
-              <span className="h-2 w-2 rounded-full bg-success animate-cyber-pulse shadow-md shadow-success" />
+          <div className="flex items-center gap-6 flex-wrap">
+            <div className="flex items-center gap-3 text-xs font-bold px-4 py-2 rounded-full border border-success/35 bg-success/10 text-success flex-shrink-0">
+              <span className="h-2.5 w-2.5 rounded-full bg-success animate-cyber-pulse shadow-md shadow-success" />
               <span>Monitoring 12 Servers</span>
             </div>
             
             {/* Server Selector Dropdown */}
-            <div className="relative flex items-center gap-1.5">
-              <Server className="h-4 w-4 text-muted" />
+            <div className="relative flex items-center gap-2 border border-border bg-background/60 rounded-xl px-3 py-1.5 shadow-sm">
+              <Server className="h-4 w-4 text-primary flex-shrink-0" />
               <select 
                 value={selectedServerId}
                 onChange={(e) => setSelectedServerId(e.target.value)}
-                className="bg-transparent text-sm font-semibold border-none focus:outline-none text-text cursor-pointer hover:text-primary transition-colors pr-4"
+                className="bg-transparent text-xs font-bold border-none focus:outline-none text-text cursor-pointer hover:text-primary transition-colors pr-2"
               >
-                <option value="all" className="bg-card text-text">All Servers</option>
+                <option value="all" className="bg-card text-text">All Infrastructure Servers</option>
                 {servers.map(s => (
                   <option key={s.id} value={s.id} className="bg-card text-text">{s.hostname} ({s.ipAddress})</option>
                 ))}
@@ -208,16 +208,18 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
           </div>
 
           {/* Search, Notifications, Profile controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4 flex-shrink-0">
             {/* Search command bar */}
             <button 
               onClick={() => setShowSearch(true)}
-              className="flex items-center gap-2 rounded-lg border border-border bg-background/50 hover:bg-border/30 px-3 py-1.5 text-xs text-muted transition-colors pr-8 relative"
+              className="hidden md:flex items-center gap-3 rounded-xl border border-border bg-background/60 hover:bg-border/40 px-4 py-2 text-xs text-muted transition-all w-56 lg:w-72 justify-between cursor-pointer shadow-sm hover:border-primary/40"
             >
-              <Search className="h-3.5 w-3.5" />
-              <span>Search SOC cmd...</span>
-              <kbd className="absolute right-2 top-2 bg-border text-[9px] px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                <Command className="h-2 w-2" />K
+              <div className="flex items-center gap-2">
+                <Search className="h-4 w-4 text-muted" />
+                <span className="font-medium">Search SOC commands...</span>
+              </div>
+              <kbd className="bg-border/80 text-[10px] px-2 py-0.5 rounded-md flex items-center gap-0.5 font-mono text-muted font-bold border border-border">
+                <Command className="h-2.5 w-2.5" />K
               </kbd>
             </button>
 
@@ -228,11 +230,11 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                   setShowNotifDropdown(!showNotifDropdown);
                   markNotificationsAsRead();
                 }}
-                className="p-2 rounded-lg border border-border hover:bg-border/30 text-muted hover:text-text transition-colors relative"
+                className="p-2.5 rounded-xl border border-border hover:bg-border/40 text-muted hover:text-text transition-colors relative cursor-pointer"
               >
                 <Bell className="h-4 w-4" />
                 {unreadNotifCount > 0 && (
-                  <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-critical animate-ping" />
+                  <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-critical animate-ping" />
                 )}
               </button>
 
@@ -245,20 +247,20 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-2 w-80 rounded-lg border border-border bg-card/95 backdrop-blur-xl p-4 shadow-xl z-50"
+                      className="absolute right-0 mt-3 w-96 rounded-xl border border-border bg-card/95 backdrop-blur-2xl p-6 shadow-2xl z-50 space-y-4"
                     >
-                      <div className="flex items-center justify-between border-b border-border pb-2 mb-2">
-                        <span className="font-semibold text-xs text-text">Notifications</span>
-                        <span className="text-[10px] text-muted">Auto-healing active</span>
+                      <div className="flex items-center justify-between border-b border-border pb-3">
+                        <span className="font-bold text-xs text-text uppercase tracking-wider">Notifications</span>
+                        <span className="text-xs text-muted font-semibold">Auto-healing active</span>
                       </div>
-                      <div className="space-y-2 max-h-60 overflow-y-auto">
+                      <div className="space-y-3.5 max-h-72 overflow-y-auto pr-1">
                         {notifications.map(n => (
-                          <div key={n.id} className="p-2 rounded bg-background/45 border border-border hover:border-primary/20 transition-colors text-left">
-                            <div className="flex items-center gap-1.5">
-                              <span className={`h-1.5 w-1.5 rounded-full ${n.type === 'critical' ? 'bg-critical' : 'bg-primary'}`} />
+                          <div key={n.id} className="p-4 rounded-lg bg-background/60 border border-border hover:border-primary/30 transition-all text-left space-y-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className={`h-2 w-2 rounded-full ${n.type === 'critical' ? 'bg-critical shadow-sm shadow-critical' : 'bg-primary'}`} />
                               <span className="font-bold text-xs text-text">{n.title}</span>
                             </div>
-                            <p className="text-[10px] text-muted mt-1 leading-normal">{n.desc}</p>
+                            <p className="text-xs text-muted leading-relaxed">{n.desc}</p>
                           </div>
                         ))}
                       </div>
@@ -269,14 +271,14 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
             </div>
 
             {/* Live status check */}
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-background text-success hover:text-success/80 transition-colors">
-              <ShieldCheck className="h-4.5 w-4.5" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background/60 text-success hover:text-success/80 transition-colors shadow-sm">
+              <ShieldCheck className="h-5 w-5" />
             </div>
           </div>
         </header>
 
         {/* 3. MAIN CONTENT WORKSPACE */}
-        <main className="flex-1 overflow-y-auto cyber-grid-bg relative p-6">
+        <main className="flex-1 overflow-y-auto cyber-grid-bg relative p-10 lg:p-12">
           {children}
         </main>
       </div>

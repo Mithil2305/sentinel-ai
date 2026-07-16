@@ -63,27 +63,27 @@ export default function IncidentsPage() {
       </div>
 
       {/* FILTER CONTROLS BAR */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 bg-card/45 p-4 rounded-xl border border-border mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-card/45 p-5 rounded-xl border border-border mb-8">
         
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted" />
+          <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted" />
           <input 
             type="text" 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by ID, threat name, technique..."
-            className="w-full bg-background border border-border rounded-lg pl-9 pr-3 py-2 text-xs text-text placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors"
+            className="w-full bg-background border border-border rounded-lg pl-10 pr-3 py-2.5 text-sm text-text placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors"
           />
         </div>
 
         {/* Severity filter */}
-        <div className="flex items-center gap-2 bg-background border border-border rounded-lg px-3 py-2">
-          <Filter className="h-3.5 w-3.5 text-muted" />
+        <div className="flex items-center gap-2.5 bg-background border border-border rounded-lg px-4 py-2.5">
+          <Filter className="h-4 w-4 text-muted" />
           <select 
             value={severityFilter}
             onChange={(e) => setSeverityFilter(e.target.value)}
-            className="bg-transparent text-xs text-text focus:outline-none w-full cursor-pointer font-medium"
+            className="bg-transparent text-sm text-text focus:outline-none w-full cursor-pointer font-medium"
           >
             <option value="all">All Severities</option>
             <option value="critical">Critical Only</option>
@@ -94,12 +94,12 @@ export default function IncidentsPage() {
         </div>
 
         {/* Status filter */}
-        <div className="flex items-center gap-2 bg-background border border-border rounded-lg px-3 py-2">
-          <Filter className="h-3.5 w-3.5 text-muted" />
+        <div className="flex items-center gap-2.5 bg-background border border-border rounded-lg px-4 py-2.5">
+          <Filter className="h-4 w-4 text-muted" />
           <select 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-transparent text-xs text-text focus:outline-none w-full cursor-pointer font-medium"
+            className="bg-transparent text-sm text-text focus:outline-none w-full cursor-pointer font-medium"
           >
             <option value="all">All Statuses</option>
             <option value="pending">Pending</option>
@@ -109,12 +109,12 @@ export default function IncidentsPage() {
         </div>
 
         {/* Server filter */}
-        <div className="flex items-center gap-2 bg-background border border-border rounded-lg px-3 py-2">
-          <HardDrive className="h-3.5 w-3.5 text-muted" />
+        <div className="flex items-center gap-2.5 bg-background border border-border rounded-lg px-4 py-2.5">
+          <HardDrive className="h-4 w-4 text-muted" />
           <select 
             value={serverFilter}
             onChange={(e) => setServerFilter(e.target.value)}
-            className="bg-transparent text-xs text-text focus:outline-none w-full cursor-pointer font-medium"
+            className="bg-transparent text-sm text-text focus:outline-none w-full cursor-pointer font-medium"
           >
             <option value="all">All Servers</option>
             {servers.map(s => (
@@ -125,41 +125,41 @@ export default function IncidentsPage() {
 
       </div>
 
-      {/* TABLE AND DRAWER SPLIT LAYOUT */}
-      <div className="flex items-start gap-6 relative">
+      {/* TABLE AND DRAWER OVERLAY */}
+      <div className="relative w-full">
         
-        {/* Incident Table Column */}
-        <div className={`transition-all duration-300 ${selectedIncident ? 'w-[58%]' : 'w-full'}`}>
-          <div className="glass-panel rounded-xl overflow-hidden">
+        {/* Incident Table Column (Always full-width) */}
+        <div className="w-full">
+          <div className="glass-panel rounded-2xl overflow-hidden border border-border/80 shadow-md">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse">
+              <table className="w-full text-left text-sm border-collapse">
                 <thead>
-                  <tr className="border-b border-border bg-card/20 text-muted font-bold text-[10px] uppercase">
-                    <th className="p-3">ID</th>
-                    <th className="p-3">Threat Name</th>
-                    <th className="p-3">Server</th>
-                    <th className="p-3">Severity</th>
-                    <th className="p-3">Status</th>
-                    <th className="p-3">MITRE Technique</th>
-                    <th className="p-3">Created At</th>
+                  <tr className="border-b border-border bg-card/40 text-muted font-extrabold text-xs uppercase tracking-wider">
+                    <th className="py-5 px-6">ID</th>
+                    <th className="py-5 px-6">Threat Name</th>
+                    <th className="py-5 px-6">Server</th>
+                    <th className="py-5 px-6">Severity</th>
+                    <th className="py-5 px-6">Status</th>
+                    <th className="py-5 px-6">MITRE Technique</th>
+                    <th className="py-5 px-6">Created At</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-border/40">
                   {filteredIncidents.map((inc) => {
                     const isSelected = selectedIncident?.id === inc.id;
                     return (
                       <tr 
                         key={inc.id}
                         onClick={() => handleRowClick(inc)}
-                        className={`border-b border-border/40 hover:bg-border/20 cursor-pointer transition-colors ${
-                          isSelected ? 'bg-primary/5 border-l-2 border-l-primary' : ''
+                        className={`hover:bg-border/20 cursor-pointer transition-colors ${
+                          isSelected ? 'bg-primary/10 border-l-4 border-l-primary font-semibold' : ''
                         }`}
                       >
-                        <td className="p-3 font-mono font-bold text-primary text-[10px]">{inc.id}</td>
-                        <td className="p-3 font-semibold text-text max-w-[200px] truncate">{inc.threatName}</td>
-                        <td className="p-3 text-muted">{inc.server}</td>
-                        <td className="p-3">
-                          <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase border ${
+                        <td className="py-5 px-6 font-mono font-bold text-primary text-xs">{inc.id}</td>
+                        <td className="py-5 px-6 font-bold text-text max-w-[260px] truncate text-sm">{inc.threatName}</td>
+                        <td className="py-5 px-6 text-muted text-sm">{inc.server}</td>
+                        <td className="py-5 px-6">
+                          <span className={`px-3 py-1 rounded-md text-xs font-black uppercase border tracking-wider ${
                             inc.severity === 'critical' 
                               ? 'bg-critical/15 text-critical border-critical/30' 
                               : inc.severity === 'high'
@@ -169,26 +169,26 @@ export default function IncidentsPage() {
                             {inc.severity}
                           </span>
                         </td>
-                        <td className="p-3">
-                          <span className="flex items-center gap-1.5">
-                            <span className={`h-1.5 w-1.5 rounded-full ${
+                        <td className="py-5 px-6">
+                          <span className="flex items-center gap-2">
+                            <span className={`h-2.5 w-2.5 rounded-full ${
                               inc.status === 'resolved' 
-                                ? 'bg-success' 
+                                ? 'bg-success shadow-sm shadow-success' 
                                 : inc.status === 'investigating'
-                                  ? 'bg-warning'
-                                  : 'bg-critical animate-pulse'
+                                  ? 'bg-warning shadow-sm shadow-warning'
+                                  : 'bg-critical animate-pulse shadow-sm shadow-critical'
                             }`} />
-                            <span className="capitalize text-[11px]">{inc.status}</span>
+                            <span className="capitalize text-sm">{inc.status}</span>
                           </span>
                         </td>
-                        <td className="p-3 font-mono text-muted text-[10px] truncate max-w-[150px]">{inc.mitreTechnique}</td>
-                        <td className="p-3 text-muted">{inc.createdAt}</td>
+                        <td className="py-5 px-6 font-mono text-muted text-sm truncate max-w-[200px]">{inc.mitreTechnique}</td>
+                        <td className="py-5 px-6 text-muted text-sm font-mono">{inc.createdAt}</td>
                       </tr>
                     );
                   })}
                   {filteredIncidents.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="text-center py-10 text-muted font-semibold">
+                      <td colSpan={7} className="text-center py-12 text-muted font-bold text-sm">
                         No incidents matched the filters. System clean.
                       </td>
                     </tr>
@@ -199,159 +199,171 @@ export default function IncidentsPage() {
           </div>
         </div>
 
-        {/* Sliding Side Drawer (40% width, absolutely overlaying/fitting side by side) */}
+        {/* Sliding Side Drawer (Overlay layout) */}
         <AnimatePresence>
           {selectedIncident && (
-            <motion.div 
-              initial={{ x: 400, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 400, opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="w-[40%] border border-border bg-card/90 backdrop-blur-xl rounded-xl p-5 shadow-2xl overflow-y-auto max-h-[75vh] flex flex-col justify-between sticky top-0"
-            >
+            <>
+              {/* Translucent Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedIncident(null)}
+                className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40 cursor-pointer"
+              />
               
-              {/* Drawer Header */}
-              <div>
-                <div className="flex items-center justify-between border-b border-border pb-3 mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-xs text-primary">{selectedIncident.id}</span>
-                    <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase border ${
-                      selectedIncident.severity === 'critical' 
-                        ? 'bg-critical/15 text-critical border-critical/30' 
-                        : selectedIncident.severity === 'high'
-                          ? 'bg-warning/15 text-warning border-warning/30'
-                          : 'bg-primary/15 text-primary border-primary/30'
-                    }`}>
-                      {selectedIncident.severity.toUpperCase()}
-                    </span>
-                  </div>
-                  <button 
-                    onClick={() => setSelectedIncident(null)}
-                    className="p-1 rounded hover:bg-border text-muted hover:text-text transition-colors"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-
-                {/* Threat Title & Server */}
-                <div className="mb-4">
-                  <h2 className="text-sm font-bold text-text leading-snug">{selectedIncident.threatName}</h2>
-                  <div className="flex items-center gap-1 text-[10px] text-muted mt-1.5">
-                    <HardDrive className="h-3 w-3" />
-                    <span>Host: {selectedIncident.server}</span>
-                  </div>
-                </div>
-
-                {/* AI Explanation Summary Card */}
-                <div className="p-3 rounded-lg border border-primary/15 bg-primary/5 mb-4 text-[11px] leading-relaxed">
-                  <div className="flex items-center gap-1 text-primary font-bold mb-1.5 uppercase text-[9px] tracking-wider">
-                    <ShieldAlert className="h-3.5 w-3.5" />
-                    <span>AI Copilot Analysis</span>
-                  </div>
-                  <p className="text-muted font-medium">{selectedIncident.explanation}</p>
-                </div>
-
-                {/* Overview Details tabs */}
-                <div className="space-y-4 text-[11px] border-b border-border/40 pb-4 mb-4">
-                  <div>
-                    <span className="font-bold text-text uppercase text-[9px] tracking-wider text-muted block mb-1">Root Cause</span>
-                    <p className="text-muted leading-normal">{selectedIncident.rootCause}</p>
-                  </div>
-                  
-                  <div>
-                    <span className="font-bold text-text uppercase text-[9px] tracking-wider text-muted block mb-1">MITRE Technique Mapping</span>
-                    <code className="bg-background border border-border px-1.5 py-0.5 rounded text-text font-mono text-[10px]">
-                      {selectedIncident.mitreTechnique}
-                    </code>
+              {/* Drawer Container */}
+              <motion.div 
+                initial={{ x: '100%', opacity: 0.9 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: '100%', opacity: 0.9 }}
+                transition={{ type: 'spring', damping: 30, stiffness: 250 }}
+                className="fixed top-0 right-0 h-full w-full max-w-xl border-l border-border bg-card/95 backdrop-blur-2xl p-8 shadow-2xl overflow-y-auto z-50 flex flex-col justify-between space-y-8"
+              >
+                
+                {/* Drawer Header */}
+                <div>
+                  <div className="flex items-center justify-between border-b border-border pb-5 mb-5">
+                    <div className="flex items-center gap-4">
+                      <span className="font-mono font-bold text-base text-primary">{selectedIncident.id}</span>
+                      <span className={`px-3 py-1 rounded text-xs font-black uppercase border ${
+                        selectedIncident.severity === 'critical' 
+                          ? 'bg-critical/15 text-critical border-critical/30' 
+                          : selectedIncident.severity === 'high'
+                            ? 'bg-warning/15 text-warning border-warning/30'
+                            : 'bg-primary/15 text-primary border-primary/30'
+                      }`}>
+                        {selectedIncident.severity.toUpperCase()}
+                      </span>
+                    </div>
+                    <button 
+                      onClick={() => setSelectedIncident(null)}
+                      className="p-1.5 rounded-lg hover:bg-border text-muted hover:text-text transition-colors"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
                   </div>
 
-                  <div>
-                    <span className="font-bold text-text uppercase text-[9px] tracking-wider text-muted block mb-1.5">Affected Assets</span>
-                    <div className="flex flex-wrap gap-1">
-                      {selectedIncident.affectedAssets.map((asset, i) => (
-                        <span key={i} className="px-2 py-0.5 rounded border border-border bg-background text-muted text-[10px] font-medium">
-                          {asset}
-                        </span>
-                      ))}
+                  {/* Threat Title & Server */}
+                  <div className="mb-6">
+                    <h2 className="text-base md:text-lg font-bold text-text leading-snug">{selectedIncident.threatName}</h2>
+                    <div className="flex items-center gap-2 text-xs text-muted mt-2.5">
+                      <HardDrive className="h-4 w-4 text-primary" />
+                      <span>Host: {selectedIncident.server}</span>
                     </div>
                   </div>
 
-                  <div>
-                    <span className="font-bold text-text uppercase text-[9px] tracking-wider text-muted block mb-1">Recommended Remediation Action</span>
-                    <p className="text-muted leading-normal font-medium text-primary/80">{selectedIncident.recommendedFix}</p>
+                  {/* AI Explanation Summary Card */}
+                  <div className="p-5 rounded-xl border border-primary/20 bg-primary/5 mb-6 text-sm leading-relaxed">
+                    <div className="flex items-center gap-2 text-primary font-bold mb-2.5 uppercase text-xs tracking-wider">
+                      <ShieldAlert className="h-4 w-4" />
+                      <span>AI Copilot Analysis</span>
+                    </div>
+                    <p className="text-muted font-medium">{selectedIncident.explanation}</p>
                   </div>
-                </div>
 
-                {/* Timeline History */}
-                <div className="mb-4">
-                  <span className="font-bold text-text uppercase text-[9px] tracking-wider text-muted block mb-2">Audited Incident Timeline</span>
-                  <div className="space-y-3 relative pl-4 before:absolute before:left-1.5 before:top-1 before:bottom-1 before:w-[1px] before:bg-border">
-                    {selectedIncident.history.map((h, i) => (
-                      <div key={i} className="relative text-[10px] leading-relaxed">
-                        <span className="absolute -left-4 top-1 h-2.5 w-2.5 rounded-full bg-border border-2 border-card" />
-                        <div className="flex justify-between text-muted">
-                          <span className="font-bold text-text">{h.user}</span>
-                          <span className="text-[9px]">{h.time}</span>
+                  {/* Overview Details tabs */}
+                  <div className="space-y-5 text-sm border-b border-border/40 pb-6 mb-6">
+                    <div>
+                      <span className="font-bold text-text uppercase text-xs tracking-wider text-muted block mb-1.5">Root Cause</span>
+                      <p className="text-muted leading-relaxed">{selectedIncident.rootCause}</p>
+                    </div>
+                    
+                    <div>
+                      <span className="font-bold text-text uppercase text-xs tracking-wider text-muted block mb-2">MITRE Technique Mapping</span>
+                      <code className="bg-background border border-border px-2.5 py-1 rounded text-text font-mono text-xs">
+                        {selectedIncident.mitreTechnique}
+                      </code>
+                    </div>
+
+                    <div>
+                      <span className="font-bold text-text uppercase text-xs tracking-wider text-muted block mb-2">Affected Assets</span>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedIncident.affectedAssets.map((asset, i) => (
+                          <span key={i} className="px-3 py-1 rounded border border-border bg-background text-muted text-xs font-medium">
+                            {asset}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="font-bold text-text uppercase text-xs tracking-wider text-muted block mb-1.5">Recommended Remediation Action</span>
+                      <p className="text-muted leading-relaxed font-semibold text-primary/95">{selectedIncident.recommendedFix}</p>
+                    </div>
+                  </div>
+
+                  {/* Timeline History */}
+                  <div className="mb-6">
+                    <span className="font-bold text-text uppercase text-xs tracking-wider text-muted block mb-3.5">Audited Incident Timeline</span>
+                    <div className="space-y-4 relative pl-5 before:absolute before:left-1.5 before:top-1.5 before:bottom-1.5 before:w-[1px] before:bg-border">
+                      {selectedIncident.history.map((h, i) => (
+                        <div key={i} className="relative text-xs leading-relaxed">
+                          <span className="absolute -left-[21px] top-1.5 h-3.5 w-3.5 rounded-full bg-border border-2 border-card" />
+                          <div className="flex justify-between text-muted">
+                            <span className="font-bold text-text">{h.user}</span>
+                            <span className="text-[10px]">{h.time}</span>
+                          </div>
+                          <p className="text-muted/85 mt-0.5">{h.action}</p>
                         </div>
-                        <p className="text-muted/80">{h.action}</p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Action Buttons Footer */}
-              <div className="border-t border-border pt-4 mt-4 flex flex-col gap-2">
-                {selectedIncident.status !== 'resolved' ? (
-                  <>
-                    {getLinkedApproval(selectedIncident.server) ? (
-                      <div className="flex gap-2">
+                {/* Action Buttons Footer */}
+                <div className="border-t border-border pt-5 mt-6 flex flex-col gap-3">
+                  {selectedIncident.status !== 'resolved' ? (
+                    <>
+                      {getLinkedApproval(selectedIncident.server) ? (
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => {
+                              const app = getLinkedApproval(selectedIncident.server);
+                              if (app) {
+                                approveApproval(app.id);
+                                // Update local selected state
+                                setSelectedIncident(prev => prev ? { ...prev, status: 'resolved' } : null);
+                              }
+                            }}
+                            className="flex-1 py-3 rounded-lg bg-success text-text text-xs font-bold hover:bg-success/90 cursor-pointer shadow-lg shadow-success/10 text-center"
+                          >
+                            Approve AI Remediation
+                          </button>
+                          <button
+                            onClick={() => {
+                              const app = getLinkedApproval(selectedIncident.server);
+                              if (app) {
+                                rejectApproval(app.id);
+                              }
+                            }}
+                            className="px-4 py-3 rounded-lg border border-border bg-card hover:bg-border text-muted text-xs font-bold cursor-pointer text-center"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      ) : (
                         <button
                           onClick={() => {
-                            const app = getLinkedApproval(selectedIncident.server);
-                            if (app) {
-                              approveApproval(app.id);
-                              // Update local selected state
-                              setSelectedIncident(prev => prev ? { ...prev, status: 'resolved' } : null);
-                            }
+                            resolveIncident(selectedIncident.id);
+                            setSelectedIncident(prev => prev ? { ...prev, status: 'resolved' } : null);
                           }}
-                          className="flex-1 py-2 rounded bg-success text-text text-[10px] font-bold hover:bg-success/90 cursor-pointer shadow-lg shadow-success/10 text-center"
+                          className="w-full py-3 rounded-lg bg-primary text-text text-xs font-bold hover:bg-primary/95 cursor-pointer shadow-lg shadow-primary/10 text-center"
                         >
-                          Approve AI Remediation
+                          Mark Resolve Manually
                         </button>
-                        <button
-                          onClick={() => {
-                            const app = getLinkedApproval(selectedIncident.server);
-                            if (app) {
-                              rejectApproval(app.id);
-                            }
-                          }}
-                          className="px-3 py-2 rounded border border-border bg-card hover:bg-border text-muted text-[10px] font-bold cursor-pointer text-center"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          resolveIncident(selectedIncident.id);
-                          setSelectedIncident(prev => prev ? { ...prev, status: 'resolved' } : null);
-                        }}
-                        className="w-full py-2 rounded bg-primary text-text text-[10px] font-bold hover:bg-primary/95 cursor-pointer shadow-lg shadow-primary/10 text-center"
-                      >
-                        Mark Resolve Manually
-                      </button>
-                    )}
-                  </>
-                ) : (
-                  <div className="flex items-center justify-center gap-1.5 py-2 rounded border border-success/30 bg-success/5 text-success text-[10px] font-bold">
-                    <ShieldCheck className="h-4 w-4" />
-                    <span>Remediated & Closed</span>
-                  </div>
-                )}
-              </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2 py-3 rounded-lg border border-success/30 bg-success/5 text-success text-xs font-bold">
+                      <ShieldCheck className="h-4.5 w-4.5" />
+                      <span>Remediated & Closed</span>
+                    </div>
+                  )}
+                </div>
 
-            </motion.div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
 

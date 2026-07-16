@@ -358,7 +358,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [selectedServerId, setSelectedServerId] = useState<string>('all');
   const [selectedPage, setSelectedPage] = useState<string>('dashboard');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [isCopilotCollapsed, setIsCopilotCollapsed] = useState(false);
+  const [isCopilotCollapsed, setIsCopilotCollapsed] = useState(true);
   const [logs, setLogs] = useState<LogEntry[]>([
     { timestamp: '12:10:05', level: 'INFO', message: 'SentinelAgent successfully heartbeated', server: 'prod-web-01' },
     { timestamp: '12:12:30', level: 'INFO', message: 'API Request GET /v1/health from 10.0.1.20', server: 'staging-api-01' },
@@ -428,11 +428,11 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     return () => clearInterval(interval);
   }, []);
 
-  const addLog = (level: 'INFO' | 'WARN' | 'ERROR' | 'ALERT', message: string, server: string) => {
+  function addLog(level: 'INFO' | 'WARN' | 'ERROR' | 'ALERT', message: string, server: string) {
     const now = new Date();
     const timeStr = now.toTimeString().split(' ')[0];
     setLogs(prev => [{ timestamp: timeStr, level, message, server }, ...prev.slice(0, 99)]);
-  };
+  }
 
   const markNotificationsAsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
