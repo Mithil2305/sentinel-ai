@@ -1,7 +1,12 @@
 import subprocess
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 from remediation.policies.guardrails import guardrails
+from remediation.actions.block_ip import block_ip_action
+from remediation.actions.kill_process import kill_process_action
+from remediation.actions.quarantine_file import quarantine_file_action
+from remediation.actions.disable_user import disable_user_action
+from remediation.actions.restart_service import restart_service_action
 
 logger = logging.getLogger("sentinel.remediation")
 
@@ -42,5 +47,28 @@ class RemediationExecutor:
                 "output": f"Simulated execution of validated command: {script}",
                 "executed": True
             }
+
+    def execute_structured_action(self, action_type: str, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Dispatch structured action payloads to specialized action handlers."""
+        action_type_upper = action_type.upper()
+
+        if action_type_upper in ["BLOCK_IP", "IP_BLOCK"]:
+            ip = params.get("ip_address") or params.get("ip")
+            return block_ip_action.execute(ip)
+        elif action_type_upper in ["KILL_PROCESS", "FREEZE_PROCESS", "PROCESS_KILL"]:
+            pid = params.get("pid")
+            signal = params.get("signal", "9")
+            return kill_process_action.execute(pid, signal)
+        elif action_type_upper in ["QUARANTINE_FILE", "FILE_QUARANTINE"]:
+            file_path = params.get("file_path") or params.get("path")
+            return quarantine_file_action.execute(file_path)
+        elif action_type_upper in ["DISABLE_USER", "LOCK_USER"]:
+            username = params.get("username") or params.get("user")
+            return disable_user_action.execute(username)
+        elif action_type_upper in ["RESTART_SERVICE", "SERVICE_RESTART"]:
+            service_name = params.get("service_name") or params.get("service")
+            return restart_service_action.execute(service_name)
+        else:
+            return {"success": False, "error": f"Unknown action type: {action_type}"}
 
 remediation_executor = RemediationExecutor()

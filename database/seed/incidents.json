@@ -1,0 +1,79 @@
+[
+  {
+    "id": "inc_ssh_brute_01",
+    "server_id": "srv_db_prod01",
+    "title": "SSH Brute Force Attack from 198.51.100.42",
+    "matched_rule": "SSH_BRUTE_FORCE",
+    "mitre_technique": "T1110.001 - Password Guessing",
+    "status": "RESOLVED",
+    "severity": "HIGH",
+    "raw_log": {
+      "timestamp": "2026-07-20T14:30:00Z",
+      "source_ip": "198.51.100.42",
+      "failed_attempts": 24,
+      "user": "root"
+    },
+    "details": {
+      "root_cause": "External IP 198.51.100.42 attempted 24 automated SSH authentication requests within 30 seconds.",
+      "cvss_score": 7.5,
+      "iocs": {"ip": "198.51.100.42"}
+    },
+    "remediation": {
+      "action_taken": "BLOCK_IP",
+      "auto_fixed": true,
+      "script_executed": "iptables -A INPUT -s 198.51.100.42 -j DROP",
+      "result": "Firewall rule added successfully."
+    }
+  },
+  {
+    "id": "inc_crypto_01",
+    "server_id": "srv_web_prod01",
+    "title": "Unauthorized Cryptominer Execution (XMRig)",
+    "matched_rule": "SUSPICIOUS_PROCESS_EXECUTION",
+    "mitre_technique": "T1496 - Resource Hijacking",
+    "status": "RESOLVED",
+    "severity": "HIGH",
+    "raw_log": {
+      "timestamp": "2026-07-20T15:10:00Z",
+      "process": "./xmrig",
+      "pid": 4892,
+      "cpu_percent": 98.4
+    },
+    "details": {
+      "root_cause": "XMRig binary running out of /tmp directory with 98.4% CPU consumption.",
+      "cvss_score": 8.0,
+      "iocs": {"pid": 4892, "file": "/tmp/xmrig"}
+    },
+    "remediation": {
+      "action_taken": "KILL_PROCESS",
+      "auto_fixed": true,
+      "script_executed": "kill -9 4892 && mv /tmp/xmrig /var/security/quarantine/",
+      "result": "Process terminated and file quarantined."
+    }
+  },
+  {
+    "id": "inc_priv_esc_01",
+    "server_id": "srv_app_prod01",
+    "title": "Privilege Escalation via Sudoer Abuse",
+    "matched_rule": "PRIVILEGE_ESCALATION_ATTEMPT",
+    "mitre_technique": "T1548.003 - Sudo and Sudo Caching",
+    "status": "PENDING_APPROVAL",
+    "severity": "CRITICAL",
+    "raw_log": {
+      "timestamp": "2026-07-20T15:40:00Z",
+      "user": "www-data",
+      "command": "sudo /bin/bash"
+    },
+    "details": {
+      "root_cause": "Web application user www-data invoked interactive root bash shell.",
+      "cvss_score": 9.8,
+      "iocs": {"username": "www-data"}
+    },
+    "remediation": {
+      "action_taken": "DISABLE_USER",
+      "auto_fixed": false,
+      "script_executed": "pkill -u www-data && passwd -l www-data",
+      "result": "Pending Human Approval"
+    }
+  }
+]

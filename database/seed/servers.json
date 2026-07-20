@@ -1,0 +1,38 @@
+[
+  {
+    "id": "srv_db_prod01",
+    "hostname": "db-prod-01.sentinel.local",
+    "ip_address": "10.0.10.15",
+    "os": "Ubuntu 22.04 LTS",
+    "specs": {"cpu_cores": 16, "ram_gb": 64, "disk_gb": 1000},
+    "agent_token": "agt_sec_db01_token99823",
+    "status": "ONLINE"
+  },
+  {
+    "id": "srv_web_prod01",
+    "hostname": "web-prod-01.sentinel.local",
+    "ip_address": "10.0.20.50",
+    "os": "Ubuntu 22.04 LTS",
+    "specs": {"cpu_cores": 8, "ram_gb": 32, "disk_gb": 500},
+    "agent_token": "agt_sec_web01_token44102",
+    "status": "ONLINE"
+  },
+  {
+    "id": "srv_app_prod01",
+    "hostname": "app-prod-01.sentinel.local",
+    "ip_address": "10.0.20.88",
+    "os": "Debian 12 Bookworm",
+    "specs": {"cpu_cores": 8, "ram_gb": 16, "disk_gb": 250},
+    "agent_token": "agt_sec_app01_token77123",
+    "status": "ONLINE"
+  },
+  {
+    "id": "srv_dc_win01",
+    "hostname": "dc-win-01.sentinel.local",
+    "ip_address": "10.0.5.10",
+    "os": "Windows Server 2022",
+    "specs": {"cpu_cores": 16, "ram_gb": 64, "disk_gb": 1000},
+    "agent_token": "agt_sec_win01_token11983",
+    "status": "ONLINE"
+  }
+]

@@ -35,6 +35,15 @@ async def ingest_logs(
         )
     
     agent_token = authorization.split(" ")[1]
+    
+    # Rate limiting: max 300 requests per minute per agent
+    from app.core.redis_client import redis_client
+    if not redis_client.check_rate_limit(f"agent:{agent_token}", limit=300, window_seconds=60):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Telemetry ingestion rate limit exceeded (max 300 req/min)."
+        )
+
     server = db.query(Server).filter(Server.agent_token == agent_token).first()
     if not server:
         # Fallback for testing/local setups where server ID is defined

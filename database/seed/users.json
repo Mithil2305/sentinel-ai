@@ -1,0 +1,18 @@
+[
+  {
+    "id": "usr_admin001",
+    "email": "sec_admin@sentinelai.local",
+    "password": "Password123!",
+    "full_name": "Lead SOC Administrator",
+    "role": "admin",
+    "is_active": true
+  },
+  {
+    "id": "usr_analyst001",
+    "email": "analyst@sentinelai.local",
+    "password": "Password123!",
+    "full_name": "Tier 2 SOC Analyst",
+    "role": "analyst",
+    "is_active": true
+  }
+]

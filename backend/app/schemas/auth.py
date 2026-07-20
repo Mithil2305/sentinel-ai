@@ -14,11 +14,21 @@ class LoginResponse(BaseModel):
 class RefreshTokenRequest(BaseModel):
     refresh_token: str
 
-class UserOut(BaseModel):
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+    full_name: str
+    role: Optional[str] = "analyst"
+
+class UserResponse(BaseModel):
     id: str
     email: EmailStr
+    full_name: Optional[str] = None
     role: str
     is_active: bool
 
     class Config:
         from_attributes = True
+
+class UserOut(UserResponse):
+    pass

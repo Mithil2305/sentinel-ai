@@ -8,6 +8,7 @@ class User(Base):
 
     id = Column(String(64), primary_key=True, default=lambda: f"usr_{uuid.uuid4().hex[:12]}")
     email = Column(String(255), unique=True, nullable=False, index=True)
+    full_name = Column(String(255), nullable=True)
     password_hash = Column(String(255), nullable=False)
     role = Column(String(50), default="admin")
     is_active = Column(Boolean, default=True)

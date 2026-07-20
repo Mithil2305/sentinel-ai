@@ -18,6 +18,7 @@ class Incident(Base):
     details = Column(JSON, default=dict)
     remediation = Column(JSON, default=dict)
     timeline = Column(JSON, default=list)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 

@@ -1,45 +1,57 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-import uuid
 from app.core.database import get_db
-from app.models.server import Server
+from app.core.security import get_current_user
+from app.models.user import User
 from app.schemas.server import ServerCreate, ServerUpdate, ServerOut
+from app.services.server_service import server_service
+from app.services.audit_service import audit_service
 
 router = APIRouter(prefix="/servers", tags=["Servers"])
 
 @router.get("", response_model=dict)
-def get_servers(db: Session = Depends(get_db)):
-    servers = db.query(Server).all()
+def get_servers(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    servers = server_service.list_servers(db)
     return {"servers": [ServerOut.model_validate(s) for s in servers]}
 
 @router.get("/{server_id}", response_model=ServerOut)
-def get_server(server_id: str, db: Session = Depends(get_db)):
-    server = db.query(Server).filter(Server.id == server_id).first()
+def get_server(
+    server_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    server = server_service.get_server_by_id(db, server_id)
     if not server:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Server ID does not exist.")
     return ServerOut.model_validate(server)
 
-@router.post("", response_model=dict, status_code=status.HTTP_210_CREATED if hasattr(status, 'HTTP_210_CREATED') else 201)
-def register_server(payload: ServerCreate, db: Session = Depends(get_db)):
-    existing = db.query(Server).filter(Server.hostname == payload.hostname).first()
-    if existing:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Hostname already exists.")
-    
-    agent_token = f"agt_sec_{uuid.uuid4().hex}"
-    server = Server(
-        id=f"srv_{uuid.uuid4().hex[:12]}",
+@router.post("", response_model=dict, status_code=status.HTTP_201_CREATED)
+def register_server(
+    payload: ServerCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    server = server_service.register_server(
+        db=db,
         hostname=payload.hostname,
         ip_address=payload.ip_address,
-        os=payload.os,
-        specs=payload.specs or {"cpu_cores": 8, "ram_gb": 16, "disk_gb": 256},
-        agent_token=agent_token,
-        status="ONLINE"
+        os_name=payload.os,
+        specs=payload.specs
     )
-    db.add(server)
-    db.commit()
-    db.refresh(server)
     
+    audit_service.log_action(
+        db=db,
+        actor=current_user.email,
+        action="SERVER_REGISTERED",
+        target_type="server",
+        target_id=server.id,
+        details={"hostname": server.hostname, "ip_address": server.ip_address}
+    )
+
     return {
         "id": server.id,
         "hostname": server.hostname,
@@ -48,28 +60,49 @@ def register_server(payload: ServerCreate, db: Session = Depends(get_db)):
     }
 
 @router.patch("/{server_id}", response_model=ServerOut)
-def update_server(server_id: str, payload: ServerUpdate, db: Session = Depends(get_db)):
-    server = db.query(Server).filter(Server.id == server_id).first()
+def update_server(
+    server_id: str,
+    payload: ServerUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    server = server_service.update_server(
+        db=db,
+        server_id=server_id,
+        hostname=payload.hostname,
+        status=payload.status,
+        specs=payload.specs
+    )
     if not server:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Server ID not found.")
-    
-    if payload.hostname:
-        server.hostname = payload.hostname
-    if payload.status:
-        server.status = payload.status
-    if payload.specs:
-        server.specs = payload.specs
-        
-    db.commit()
-    db.refresh(server)
+
+    audit_service.log_action(
+        db=db,
+        actor=current_user.email,
+        action="SERVER_UPDATED",
+        target_type="server",
+        target_id=server.id,
+        details=payload.model_dump(exclude_unset=True)
+    )
+
     return ServerOut.model_validate(server)
 
 @router.delete("/{server_id}", response_model=dict)
-def deregister_server(server_id: str, db: Session = Depends(get_db)):
-    server = db.query(Server).filter(Server.id == server_id).first()
-    if not server:
+def deregister_server(
+    server_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    success = server_service.deregister_server(db, server_id)
+    if not success:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Server ID not found.")
-    
-    db.delete(server)
-    db.commit()
+
+    audit_service.log_action(
+        db=db,
+        actor=current_user.email,
+        action="SERVER_DEREGISTERED",
+        target_type="server",
+        target_id=server_id
+    )
+
     return {"id": server_id, "deregistered": True}

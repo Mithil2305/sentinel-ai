@@ -3,6 +3,7 @@ from app.schemas.server import ServerCreate, ServerUpdate, ServerOut
 from app.schemas.incident import IncidentCreate, IncidentUpdate, IncidentOut, IncidentListResponse
 from app.schemas.approval import ApprovalActionRequest, ApprovalOut
 from app.schemas.report import ReportGenerateRequest, ReportOut
+from app.schemas.dashboard import DashboardStatsResponse, MitreMatrixResponse
 from app.schemas.error import ProblemDetails
 
 __all__ = [
@@ -11,5 +12,6 @@ __all__ = [
     "IncidentCreate", "IncidentUpdate", "IncidentOut", "IncidentListResponse",
     "ApprovalActionRequest", "ApprovalOut",
     "ReportGenerateRequest", "ReportOut",
+    "DashboardStatsResponse", "MitreMatrixResponse",
     "ProblemDetails"
 ]

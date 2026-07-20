@@ -27,8 +27,17 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
 
-    # Alerts & Email
+    # Alerts, Notifications & Email
     ADMIN_EMAIL: str = os.getenv("ADMIN_EMAIL", "sec_admin@sentinelai.local")
+    SMTP_HOST: str = os.getenv("SMTP_HOST", "smtp.sendgrid.net")
+    SMTP_PORT: int = int(os.getenv("SMTP_PORT", "587"))
+    SMTP_USER: str = os.getenv("SMTP_USER", "")
+    SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "")
+    SLACK_WEBHOOK_URL: str = os.getenv("SLACK_WEBHOOK_URL", "")
+
+    # Security & Monitoring
+    ENABLE_PROMETHEUS_METRICS: bool = os.getenv("ENABLE_PROMETHEUS_METRICS", "true").lower() == "true"
+    CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000")
 
     class Config:
         env_file = ".env"
