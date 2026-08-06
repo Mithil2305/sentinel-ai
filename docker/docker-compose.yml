@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15-alpine
@@ -31,14 +29,14 @@ services:
 
   backend:
     build:
-      context: ../backend
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/backend.Dockerfile
     container_name: sentinel-backend
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000
     volumes:
       - ../backend:/app
-      - ../ai-engine:/app/ai_engine
-      - ../detection-engine:/app/detection_engine
+      - ../ai_engine:/app/ai_engine
+      - ../detection_engine:/app/detection_engine
       - ../remediation:/app/remediation
     ports:
       - "8000:8000"
@@ -46,43 +44,47 @@ services:
       - DATABASE_URL=postgresql://sentinel_user:SentinelPass123!@postgres:5432/sentinel_db
       - REDIS_URL=redis://redis:6379/0
       - LLM_PROVIDER=local
-      - LOCAL_LLM_BASE_URL=http://host.docker.internal:11434/v1
-      - MODEL_TRIAGE_SEVERITY=phi-4-mini:Q4_K_M
-      - MODEL_FORENSICS_MITIGATION=qwen2.5-coder:3b-instruct
+      - LOCAL_LLM_BASE_URL=http://ollama:11434/v1
+      - MODEL_TRIAGE_SEVERITY=phi4-mini
+      - MODEL_FORENSICS_MITIGATION=qwen2.5-coder:3b
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+      ollama:
+        condition: service_started
 
   celery_worker:
     build:
-      context: ../backend
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/backend.Dockerfile
     container_name: sentinel-celery
     command: celery -A app.core.celery_app worker --loglevel=info
     volumes:
       - ../backend:/app
-      - ../ai-engine:/app/ai_engine
-      - ../detection-engine:/app/detection_engine
+      - ../ai_engine:/app/ai_engine
+      - ../detection_engine:/app/detection_engine
       - ../remediation:/app/remediation
     environment:
       - DATABASE_URL=postgresql://sentinel_user:SentinelPass123!@postgres:5432/sentinel_db
       - REDIS_URL=redis://redis:6379/0
       - LLM_PROVIDER=local
-      - LOCAL_LLM_BASE_URL=http://host.docker.internal:11434/v1
-      - MODEL_TRIAGE_SEVERITY=phi-4-mini:Q4_K_M
-      - MODEL_FORENSICS_MITIGATION=qwen2.5-coder:3b-instruct
+      - LOCAL_LLM_BASE_URL=http://ollama:11434/v1
+      - MODEL_TRIAGE_SEVERITY=phi4-mini
+      - MODEL_FORENSICS_MITIGATION=qwen2.5-coder:3b
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+      ollama:
+        condition: service_started
 
   frontend:
     build:
-      context: ../frontend
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/frontend.Dockerfile
     container_name: sentinel-frontend
     ports:
       - "3000:3000"
@@ -92,5 +94,41 @@ services:
     depends_on:
       - backend
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: sentinel-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  ollama-pull-models:
+    image: curlimages/curl:latest
+    container_name: sentinel-ollama-pull-models
+    depends_on:
+      - ollama
+    entrypoint: [ "/bin/sh", "-c" ]
+    command: >
+      "
+      echo 'Waiting for Ollama to start...' &&
+      until curl -s http://ollama:11434/api/tags > /dev/null; do
+        sleep 5
+      done &&
+      echo 'Ollama is up. Pulling model: phi4-mini...' &&
+      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"phi4-mini\"}' &&
+      echo 'Pulling model: qwen2.5-coder:3b...' &&
+      curl -X POST http://ollama:11434/api/pull -d '{\"name\": \"qwen2.5-coder:3b\"}' &&
+      echo 'Models successfully pulled!'
+      "
+
 volumes:
   postgres_data:
+  ollama_data:
+
