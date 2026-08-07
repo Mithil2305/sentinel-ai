@@ -12,10 +12,10 @@ export const spacing = {
 
   // Layout-specific spacing
   pagePaddingXDesktop: 32,
-  pagePaddingYDesktop: 28,
-  pagePaddingXLarge: 40,
+  pagePaddingYDesktop: 32,
+  pagePaddingXLarge: 32,
   sectionSpacing: 32,
-  cardSpacing: 24,
+  cardSpacing: 20,
   controlSpacing: 16,
   labelSpacing: 8,
 

@@ -1,11 +1,11 @@
 export const typography = {
   sizes: {
-    display: '48px',
-    pageTitle: '36px',
-    sectionTitle: '28px',
-    cardTitle: '22px',
-    subsection: '18px',
-    body: '16px',
+    display: '42px',
+    pageTitle: '30px',
+    sectionTitle: '22px',
+    cardTitle: '16px',
+    subsection: '16px',
+    body: '14px',
     smallText: '14px',
     caption: '12px',
   },

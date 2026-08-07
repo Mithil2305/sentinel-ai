@@ -114,62 +114,62 @@ export default function IncidentsPage() {
       />
 
       {/* FILTER CONTROLS BAR */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-card/45 p-5 rounded-card border border-border mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-[#151515] p-5 rounded-card border border-border mb-8">
         
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3.5 top-3 h-4 w-4 text-muted" />
+          <Search className="absolute left-3.5 top-3 h-4 w-4 text-[#71717A]" />
           <input 
             type="text" 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search threats..."
-            className="w-full h-10 bg-background border border-border rounded-input pl-10 pr-3 py-2 text-small-text text-text placeholder:text-muted focus:outline-none focus:border-primary/50 transition-colors"
+            className="w-full h-10 bg-[#111111] border border-border rounded-input pl-10 pr-3 py-2 text-small-text text-text placeholder:text-[#71717A] focus:outline-none focus:border-primary/60 transition-colors font-mono"
           />
         </div>
 
         {/* Severity filter */}
-        <div className="flex items-center gap-2 bg-background border border-border rounded-input px-3.5 h-10">
-          <Filter className="h-4 w-4 text-muted" />
+        <div className="flex items-center gap-2 bg-[#111111] border border-border rounded-input px-3.5 h-10">
+          <Filter className="h-4 w-4 text-[#71717A]" />
           <select 
             value={severityFilter}
             onChange={(e) => setSeverityFilter(e.target.value)}
             className="bg-transparent text-small-text text-text focus:outline-none w-full cursor-pointer font-bold"
           >
-            <option value="all">All Severities</option>
-            <option value="critical">Critical Only</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
+            <option value="all" className="bg-[#111111]">All Severities</option>
+            <option value="critical" className="bg-[#111111]">Critical Only</option>
+            <option value="high" className="bg-[#111111]">High</option>
+            <option value="medium" className="bg-[#111111]">Medium</option>
+            <option value="low" className="bg-[#111111]">Low</option>
           </select>
         </div>
 
         {/* Status filter */}
-        <div className="flex items-center gap-2 bg-background border border-border rounded-input px-3.5 h-10">
-          <Filter className="h-4 w-4 text-muted" />
+        <div className="flex items-center gap-2 bg-[#111111] border border-border rounded-input px-3.5 h-10">
+          <Filter className="h-4 w-4 text-[#71717A]" />
           <select 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="bg-transparent text-small-text text-text focus:outline-none w-full cursor-pointer font-bold"
           >
-            <option value="all">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="investigating">Investigating</option>
-            <option value="resolved">Resolved</option>
+            <option value="all" className="bg-[#111111]">All Statuses</option>
+            <option value="pending" className="bg-[#111111]">Pending</option>
+            <option value="investigating" className="bg-[#111111]">Investigating</option>
+            <option value="resolved" className="bg-[#111111]">Resolved</option>
           </select>
         </div>
 
         {/* Server filter */}
-        <div className="flex items-center gap-2 bg-background border border-border rounded-input px-3.5 h-10">
-          <HardDrive className="h-4 w-4 text-muted" />
+        <div className="flex items-center gap-2 bg-[#111111] border border-border rounded-input px-3.5 h-10">
+          <HardDrive className="h-4 w-4 text-[#71717A]" />
           <select 
             value={serverFilter}
             onChange={(e) => setServerFilter(e.target.value)}
             className="bg-transparent text-small-text text-text focus:outline-none w-full cursor-pointer font-bold"
           >
-            <option value="all">All Servers</option>
+            <option value="all" className="bg-[#111111]">All Servers</option>
             {servers.map(s => (
-              <option key={s.id} value={s.hostname}>{s.hostname}</option>
+              <option key={s.id} value={s.hostname} className="bg-[#111111]">{s.hostname}</option>
             ))}
           </select>
         </div>
@@ -198,7 +198,7 @@ export default function IncidentsPage() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 onClick={() => setSelectedIncident(null)}
-                className="fixed inset-0 bg-background/60 backdrop-blur-sm z-40 cursor-pointer"
+                className="fixed inset-0 bg-black/60 backdrop-blur-sm z-45 cursor-pointer"
               />
               
               {/* Drawer Container */}
@@ -207,7 +207,7 @@ export default function IncidentsPage() {
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: '100%', opacity: 0.9 }}
                 transition={{ type: 'spring', damping: 30, stiffness: 250 }}
-                className="fixed top-0 right-0 h-full w-full max-w-xl border-l border-border bg-card/95 backdrop-blur-2xl p-8 shadow-2xl overflow-y-auto z-50 flex flex-col justify-between space-y-6"
+                className="fixed top-0 right-0 h-full w-full max-w-xl border-l border-border bg-[#151515] p-8 shadow-2xl overflow-y-auto z-50 flex flex-col justify-between space-y-6"
               >
                 
                 {/* Drawer Header */}
@@ -219,7 +219,7 @@ export default function IncidentsPage() {
                     </div>
                     <button 
                       onClick={() => setSelectedIncident(null)}
-                      className="p-2 rounded-input hover:bg-border text-muted hover:text-text transition-colors cursor-pointer"
+                      className="p-2 rounded-input hover:bg-[#262626] text-[#71717A] hover:text-text transition-colors cursor-pointer"
                     >
                       <X className="h-5 w-5" />
                     </button>
@@ -228,7 +228,7 @@ export default function IncidentsPage() {
                   {/* Threat Title & Server */}
                   <div className="mb-6 space-y-1.5">
                     <h2 className="text-subsection font-bold text-text leading-snug">{selectedIncident.threatName}</h2>
-                    <div className="flex items-center gap-2 text-caption text-muted font-normal">
+                    <div className="flex items-center gap-2 text-caption text-[#A1A1AA] font-normal">
                       <HardDrive className="h-4 w-4 text-primary" />
                       <span>Host Platform Node: <strong className="text-text font-bold">{selectedIncident.server}</strong></span>
                     </div>
@@ -242,22 +242,22 @@ export default function IncidentsPage() {
                   {/* Overview Details tabs */}
                   <div className="space-y-5 text-caption border-b border-border/40 pb-6 mb-6">
                     <div>
-                      <span className="font-bold text-text uppercase text-caption tracking-wider text-muted block mb-1">Root Cause Analysis</span>
-                      <p className="text-muted leading-relaxed font-normal">{selectedIncident.rootCause}</p>
+                      <span className="font-bold text-[10px] uppercase tracking-wider text-[#71717A] block mb-1">Root Cause Analysis</span>
+                      <p className="text-[#A1A1AA] leading-relaxed font-normal">{selectedIncident.rootCause}</p>
                     </div>
                     
                     <div>
-                      <span className="font-bold text-text uppercase text-caption tracking-wider text-muted block mb-2">MITRE Technique Mapping</span>
-                      <code className="bg-background border border-border px-2.5 py-1 rounded-input text-text font-mono text-caption font-bold">
+                      <span className="font-bold text-[10px] uppercase tracking-wider text-[#71717A] block mb-2">MITRE Technique Mapping</span>
+                      <code className="bg-[#111111] border border-border px-2.5 py-1 rounded-input text-text font-mono text-caption font-bold">
                         {selectedIncident.mitreTechnique}
                       </code>
                     </div>
 
                     <div>
-                      <span className="font-bold text-text uppercase text-caption tracking-wider text-muted block mb-2">Affected Subnet Assets</span>
+                      <span className="font-bold text-[10px] uppercase tracking-wider text-[#71717A] block mb-2">Affected Subnet Assets</span>
                       <div className="flex flex-wrap gap-2">
                         {selectedIncident.affectedAssets.map((asset, i) => (
-                          <span key={i} className="px-3 py-1 rounded-badge border border-border bg-background text-muted text-caption font-bold">
+                          <span key={i} className="px-3 py-1 rounded-badge border border-border bg-[#111111] text-[#A1A1AA] text-caption font-bold">
                             {asset}
                           </span>
                         ))}
@@ -265,23 +265,23 @@ export default function IncidentsPage() {
                     </div>
 
                     <div>
-                      <span className="font-bold text-text uppercase text-caption tracking-wider text-muted block mb-1">Recommended Remediation Action</span>
-                      <p className="text-muted leading-relaxed font-bold text-primary">{selectedIncident.recommendedFix}</p>
+                      <span className="font-bold text-[10px] uppercase tracking-wider text-[#71717A] block mb-1">Recommended Remediation Action</span>
+                      <p className="text-[#A1A1AA] leading-relaxed font-bold text-primary">{selectedIncident.recommendedFix}</p>
                     </div>
                   </div>
 
                   {/* Timeline History */}
                   <div className="mb-6">
-                    <span className="font-bold text-text uppercase text-[12px] tracking-wider text-muted block mb-3">Audited Incident Timeline</span>
+                    <span className="font-bold text-[10px] uppercase tracking-wider text-[#71717A] block mb-3">Audited Incident Timeline</span>
                     <div className="space-y-4 relative pl-5 before:absolute before:left-1.5 before:top-1.5 before:bottom-1.5 before:w-[1px] before:bg-border">
                       {selectedIncident.history.map((h, i) => (
                         <div key={i} className="relative text-caption leading-relaxed font-normal">
-                          <span className="absolute -left-[21px] top-1.5 h-3.5 w-3.5 rounded-badge bg-border border-2 border-card" />
-                          <div className="flex justify-between text-muted">
+                          <span className="absolute -left-[21px] top-1.5 h-3.5 w-3.5 rounded-badge bg-border border-2 border-[#151515]" />
+                          <div className="flex justify-between text-[#71717A]">
                             <span className="font-bold text-text">{h.user}</span>
                             <span className="text-[10px]">{h.time}</span>
                           </div>
-                          <p className="text-muted/85 mt-0.5">{h.action}</p>
+                          <p className="text-[#A1A1AA] mt-0.5">{h.action}</p>
                         </div>
                       ))}
                     </div>
@@ -333,7 +333,7 @@ export default function IncidentsPage() {
                       )}
                     </>
                   ) : (
-                    <div className="flex items-center justify-center gap-2 py-3 rounded-card border border-success/30 bg-success/5 text-success text-caption font-bold uppercase tracking-wider">
+                    <div className="flex items-center justify-center gap-2 py-3 rounded-card border border-success/20 bg-success/10 text-success text-caption font-bold uppercase tracking-wider">
                       <ShieldCheck className="h-4.5 w-4.5" />
                       <span>Remediated & Closed</span>
                     </div>

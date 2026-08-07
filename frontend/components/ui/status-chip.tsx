@@ -45,7 +45,7 @@ export const StatusChip: React.FC<StatusChipProps> = ({ status, className = '' }
       label: 'Maintenance',
     },
     pending: {
-      bg: 'bg-primary/15 text-primary border-primary/30',
+      bg: 'bg-primary/10 text-primary border-primary/20',
       dot: 'bg-primary animate-pulse',
       label: 'Pending',
     },
@@ -55,8 +55,8 @@ export const StatusChip: React.FC<StatusChipProps> = ({ status, className = '' }
       label: 'Resolved',
     },
     investigating: {
-      bg: 'bg-warning/10 text-warning border-warning/20',
-      dot: 'bg-warning animate-pulse',
+      bg: 'bg-information/10 text-information border-information/20',
+      dot: 'bg-information animate-pulse',
       label: 'Investigating',
     },
   };

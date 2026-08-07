@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ActionButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
 }
@@ -18,11 +18,12 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   const baseStyle = 'inline-flex items-center justify-center font-bold transition-all duration-150 rounded-button cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variants = {
-    primary: 'bg-primary hover:bg-primary/90 text-text shadow-lg shadow-primary/10 border border-primary/20',
-    secondary: 'bg-card/80 border border-border hover:bg-border/60 text-text shadow-sm',
-    outline: 'border border-border bg-transparent hover:bg-border/30 text-text',
-    ghost: 'text-muted hover:bg-border/30 hover:text-text bg-transparent',
-    danger: 'bg-critical hover:bg-critical/90 text-text shadow-lg shadow-critical/10 border border-critical/20',
+    primary: 'bg-primary hover:bg-primary/95 text-text border border-primary/20 shadow-lg transition-colors focus:outline-none',
+    secondary: 'bg-secondary-surface border border-border hover:bg-border/40 text-text shadow-sm transition-colors focus:outline-none',
+    outline: 'border border-border bg-transparent hover:bg-border/40 text-text transition-colors focus:outline-none',
+    ghost: 'text-muted hover:bg-border/40 hover:text-text bg-transparent transition-colors focus:outline-none',
+    danger: 'bg-critical hover:bg-critical/80 text-text shadow-lg border border-critical/20 transition-colors focus:outline-none',
+    success: 'bg-success hover:bg-success/90 text-text shadow-lg border border-success/20 transition-colors focus:outline-none',
   };
 
   const sizes = {

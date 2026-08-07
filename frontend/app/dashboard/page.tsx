@@ -224,26 +224,25 @@ export default function DashboardPage() {
       {/* ═══════════════════════════════════════════════════════ */}
       {/*  BENTO GRID — Row 1: Score card + Metric Cards        */}
       {/* ═══════════════════════════════════════════════════════ */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '20px' }}>
+      <div className="grid grid-cols-12 gap-[20px]">
 
         {/* ── CELL A: Security Posture Score Ring (cols 1-4) ── */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          style={{ gridColumn: '1 / span 4' }}
-          className="glass-panel rounded-card p-6 border border-primary/20 glow-primary relative overflow-hidden flex flex-col items-center justify-center gap-4"
+          className="col-span-4 bg-[#151515] rounded-card p-6 border border-border relative overflow-hidden flex flex-col items-center justify-center gap-4"
         >
           {/* Background glow blob */}
           <div className="absolute top-0 left-0 w-full h-full pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(59,130,246,0.08) 0%, transparent 70%)' }} />
+            style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(249,115,22,0.03) 0%, transparent 70%)' }} />
 
           {/* Score Ring */}
           <div style={{ position: 'relative', width: 128, height: 128, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             className="flex-shrink-0"
           >
             <svg width="128" height="128" viewBox="0 0 128 128" style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}>
-              <circle cx="64" cy="64" r="54" stroke="#1F2937" strokeWidth="10" fill="transparent" />
+              <circle cx="64" cy="64" r="54" stroke="#262626" strokeWidth="10" fill="transparent" />
               <motion.circle
                 cx="64" cy="64" r="54"
                 stroke={scoreStatus.ringColor}
@@ -258,7 +257,7 @@ export default function DashboardPage() {
             </svg>
             <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <span className="text-display font-bold tracking-tight text-text leading-none">{securityScore}</span>
-              <span className="text-caption font-bold text-muted uppercase tracking-wider" style={{ marginTop: 2 }}>Score</span>
+              <span className="text-caption font-bold text-[#71717A] uppercase tracking-wider" style={{ marginTop: 2 }}>Score</span>
             </div>
           </div>
 
@@ -267,7 +266,7 @@ export default function DashboardPage() {
             <span className={`inline-block px-3 py-1 rounded-badge text-[11px] font-bold border uppercase tracking-wider ${scoreStatus.badge}`}>
               {scoreStatus.label}
             </span>
-            <p className="text-caption text-muted leading-relaxed font-normal max-w-[200px]">
+            <p className="text-caption text-[#A1A1AA] leading-relaxed font-normal max-w-[200px]">
               {securityScore >= 90
                 ? 'All autonomous policies are fully operational.'
                 : 'Resolve pending threats to restore normal posture.'}
@@ -296,66 +295,65 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* ── CELLS B–F: 5 Metric Cards filling cols 5-12 (2 rows × 4 cols each) ── */}
-        {metrics.map((m, i) => {
-          const Icon = m.icon;
-          // Explicit column placement within the 12-col grid:
-          // Row 1: cards 0,1,2 → cols 5-6, 7-8, 9-10  (span 2 each)
-          // Row 2: cards 3,4   → cols 5-8, 9-12        (span 4 each, wider for balance)
-          const colMap = [
-            '5 / span 3',  // Card 0
-            '8 / span 3',  // Card 1
-            '11 / span 2', // Card 2
-            '5 / span 4',  // Card 3
-            '9 / span 4',  // Card 4
-          ];
-          return (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: i * 0.06 }}
-              style={{ gridColumn: colMap[i], alignSelf: 'stretch' }}
-              className="glass-panel rounded-card p-5 border border-border/80 flex flex-col gap-3"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-caption font-bold text-muted uppercase tracking-wider">{m.title}</span>
-                <div className="p-2 rounded-input" style={{ background: `${m.color}18` }}>
-                  <Icon style={{ width: 14, height: 14, color: m.color }} />
+        <div className="col-span-8 grid grid-cols-8 gap-[20px]">
+          {metrics.map((m, i) => {
+            const Icon = m.icon;
+            // Explicit column span and placement:
+            // Row 1: cards 0,1,2 → cols span 3, 3, 2
+            // Row 2: cards 3,4   → cols span 4, 4
+            const cardSpans = [
+              'col-span-3', // Card 0
+              'col-span-3', // Card 1
+              'col-span-2', // Card 2
+              'col-span-4', // Card 3
+              'col-span-4', // Card 4
+            ];
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: i * 0.06 }}
+                className={`${cardSpans[i]} bg-[#151515] rounded-card p-5 border border-border flex flex-col gap-3 justify-between hover:border-primary/20 transition-all`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-caption font-bold text-[#71717A] uppercase tracking-wider">{m.title}</span>
+                  <div className="p-2 rounded-input" style={{ background: `${m.color}10` }}>
+                    <Icon style={{ width: 14, height: 14, color: m.color }} />
+                  </div>
                 </div>
-              </div>
-              <div>
-                <span className="text-2xl font-bold" style={{ color: m.color }}>{m.value}</span>
-                <p className="text-caption text-muted mt-1 font-normal">{m.sub}</p>
-              </div>
-              {m.trendLabel && (
-                <div className="flex items-center gap-1.5">
-                  {m.trend === 'up' && <TrendingUp style={{ width: 11, height: 11, color: '#EF4444' }} />}
-                  {m.trend === 'down' && <TrendingDown style={{ width: 11, height: 11, color: '#22C55E' }} />}
-                  {m.trend === 'warn' && <TrendingUp style={{ width: 11, height: 11, color: '#F59E0B' }} />}
-                  <span className="text-[10px] font-bold" style={{
-                    color: m.trend === 'down' ? '#22C55E' : m.trend === 'up' ? '#EF4444' : m.trend === 'warn' ? '#F59E0B' : '#9CA3AF'
-                  }}>{m.trendLabel}</span>
+                <div>
+                  <span className="text-2xl font-bold font-mono" style={{ color: m.color }}>{m.value}</span>
+                  <p className="text-caption text-[#A1A1AA] mt-1 font-normal">{m.sub}</p>
                 </div>
-              )}
-            </motion.div>
-          );
-        })}
+                {m.trendLabel && (
+                  <div className="flex items-center gap-1.5 pt-1 border-t border-border/20">
+                    {m.trend === 'up' && <TrendingUp style={{ width: 11, height: 11, color: '#EF4444' }} />}
+                    {m.trend === 'down' && <TrendingDown style={{ width: 11, height: 11, color: '#22C55E' }} />}
+                    {m.trend === 'warn' && <TrendingUp style={{ width: 11, height: 11, color: '#F59E0B' }} />}
+                    <span className="text-[10px] font-bold" style={{
+                      color: m.trend === 'down' ? '#22C55E' : m.trend === 'up' ? '#EF4444' : m.trend === 'warn' ? '#F59E0B' : '#71717A'
+                    }}>{m.trendLabel}</span>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
 
       </div>
 
       {/* ═══════════════════════════════════════════════════════ */}
       {/*  BENTO GRID — Row 2: Charts                          */}
       {/* ═══════════════════════════════════════════════════════ */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '20px' }}>
+      <div className="grid grid-cols-12 gap-[20px]">
 
         {/* ── Threat Activity Area Chart (cols 1-8) ── */}
-        <div style={{ gridColumn: '1 / span 8', height: '360px' }}
-          className="glass-panel rounded-card p-6 border border-border/80 shadow-md flex flex-col"
-        >
+        <div className="col-span-8 h-[360px] bg-[#151515] rounded-card p-6 border border-border shadow-md flex flex-col">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border pb-4 mb-5 gap-3 flex-shrink-0">
             <div>
               <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Threat Activity Timeline</h3>
-              <p className="text-caption text-muted mt-1 font-normal">Detections vs resolutions — 7-day window</p>
+              <p className="text-caption text-[#71717A] mt-1 font-normal">Detections vs resolutions — 7-day window</p>
             </div>
             <div className="flex items-center gap-4 text-caption font-bold">
               <span className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-badge bg-critical" /> Detected</span>
@@ -368,20 +366,20 @@ export default function DashboardPage() {
                 <AreaChart data={threatHistoryData} margin={{ top: 8, right: 8, left: -22, bottom: 0 }}>
                   <defs>
                     <linearGradient id="detectedGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#EF4444" stopOpacity={0.25}/>
+                      <stop offset="5%" stopColor="#EF4444" stopOpacity={0.15}/>
                       <stop offset="95%" stopColor="#EF4444" stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="resolvedGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#22C55E" stopOpacity={0.25}/>
+                      <stop offset="5%" stopColor="#22C55E" stopOpacity={0.15}/>
                       <stop offset="95%" stopColor="#22C55E" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" vertical={false} />
-                  <XAxis dataKey="day" stroke="#9CA3AF" fontSize={10} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#9CA3AF" fontSize={10} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+                  <XAxis dataKey="day" stroke="#71717A" fontSize={10} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#71717A" fontSize={10} tickLine={false} axisLine={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#111827', borderColor: '#1F2937', fontSize: 12, borderRadius: 8, padding: '10px' }}
-                    labelStyle={{ fontWeight: 'bold', color: '#F9FAFB' }}
+                    contentStyle={{ backgroundColor: '#111111', borderColor: '#262626', fontSize: 12, borderRadius: 12, padding: '10px' }}
+                    labelStyle={{ fontWeight: 'bold', color: '#FAFAFA' }}
                   />
                   <Area type="monotone" dataKey="detected" stroke="#EF4444" strokeWidth={2} fillOpacity={1} fill="url(#detectedGrad)" />
                   <Area type="monotone" dataKey="resolved" stroke="#22C55E" strokeWidth={2} fillOpacity={1} fill="url(#resolvedGrad)" />
@@ -394,12 +392,10 @@ export default function DashboardPage() {
         </div>
 
         {/* ── Threat Distribution Donut (cols 9-12) ── */}
-        <div style={{ gridColumn: '9 / span 4' }}
-          className="glass-panel rounded-card p-6 border border-border/80 shadow-md flex flex-col"
-        >
+        <div className="col-span-4 bg-[#151515] rounded-card p-6 border border-border shadow-md flex flex-col">
           <div className="border-b border-border pb-4 mb-4 flex-shrink-0">
             <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Threat Distribution</h3>
-            <p className="text-caption text-muted mt-1 font-normal">By attack classification</p>
+            <p className="text-caption text-[#71717A] mt-1 font-normal">By attack classification</p>
           </div>
 
           <div style={{ position: 'relative', height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -419,7 +415,7 @@ export default function DashboardPage() {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: '#111827', borderColor: '#1F2937', fontSize: 11, borderRadius: 8 }} />
+                  <Tooltip contentStyle={{ backgroundColor: '#111111', borderColor: '#262626', fontSize: 11, borderRadius: 12 }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
@@ -427,7 +423,7 @@ export default function DashboardPage() {
             )}
             {/* Center label — uses inline style positioning to avoid absolute/relative conflicts */}
             <div style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none' }}>
-              <span className="text-[10px] font-bold text-muted uppercase tracking-wider">Vectors</span>
+              <span className="text-[10px] font-bold text-[#71717A] uppercase tracking-wider">Vectors</span>
               <span className="text-2xl font-bold text-text leading-none" style={{ marginTop: 2 }}>984</span>
             </div>
           </div>
@@ -437,7 +433,7 @@ export default function DashboardPage() {
               <div key={i} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-badge flex-shrink-0" style={{ backgroundColor: d.color }} />
-                  <span className="text-muted text-[10px]">{d.name}</span>
+                  <span className="text-[#A1A1AA] text-[10px]">{d.name}</span>
                 </div>
                 <span className="font-mono text-[10px]" style={{ color: d.color }}>{d.value}%</span>
               </div>
@@ -450,15 +446,15 @@ export default function DashboardPage() {
       {/* ═══════════════════════════════════════════════════════ */}
       {/*  Row 3: Active Threats Table                         */}
       {/* ═══════════════════════════════════════════════════════ */}
-      <div className="glass-panel rounded-card border border-border/80 overflow-hidden">
+      <div className="bg-[#151515] rounded-card border border-border overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-border gap-3">
           <div>
             <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Active Threats Queue</h3>
-            <p className="text-caption text-muted mt-1 font-normal">Real-time incident response log. Click to review action details.</p>
+            <p className="text-caption text-[#71717A] mt-1 font-normal">Real-time incident response log. Click to review action details.</p>
           </div>
           <button
             onClick={() => router.push('/incidents')}
-            className="text-caption font-bold text-primary hover:underline flex items-center gap-2 self-start sm:self-auto cursor-pointer flex-shrink-0"
+            className="text-caption font-bold text-primary hover:text-[#FB923C] hover:underline flex items-center gap-2 self-start sm:self-auto cursor-pointer flex-shrink-0 transition-colors"
           >
             <span>View All Incidents</span>
             <ArrowUpRight className="h-3.5 w-3.5" />

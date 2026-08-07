@@ -91,11 +91,11 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
         <div className="md:col-span-2 space-y-8">
           
           {/* Timeline Chart */}
-          <div className="glass-panel rounded-card p-card-padding flex flex-col h-80 border border-border/80 shadow-md">
+          <div className="bg-[#151515] rounded-card p-6 flex flex-col h-80 border border-border shadow-md">
             <div className="flex items-center justify-between border-b border-border pb-3.5 mb-5 select-none">
               <div>
-                <h3 className="font-bold text-[14px] text-text uppercase tracking-wider">Node Telemetry History</h3>
-                <p className="text-caption text-muted mt-1 font-normal">CPU & RAM utilisation timeline</p>
+                <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Node Telemetry History</h3>
+                <p className="text-caption text-[#71717A] mt-1 font-normal">CPU & RAM utilisation timeline</p>
               </div>
               <div className="flex items-center gap-3.5 text-caption font-bold">
                 <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-badge bg-primary" /> CPU</span>
@@ -109,19 +109,19 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
                   <AreaChart data={historyData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
                     <defs>
                       <linearGradient id="cpuGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#F97316" stopOpacity={0.2}/>
+                        <stop offset="95%" stopColor="#F97316" stopOpacity={0}/>
                       </linearGradient>
                       <linearGradient id="ramGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#22C55E" stopOpacity={0.2}/>
                         <stop offset="95%" stopColor="#22C55E" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" vertical={false} />
-                    <XAxis dataKey="tick" stroke="#9CA3AF" fontSize={9} tickLine={false} />
-                    <YAxis stroke="#9CA3AF" fontSize={9} tickLine={false} />
-                    <Tooltip contentStyle={{ backgroundColor: '#111827', borderColor: '#1F2937', fontSize: 10 }} />
-                    <Area type="monotone" dataKey="cpu" stroke="#3B82F6" strokeWidth={2} fillOpacity={1} fill="url(#cpuGrad)" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+                    <XAxis dataKey="tick" stroke="#71717A" fontSize={9} tickLine={false} />
+                    <YAxis stroke="#71717A" fontSize={9} tickLine={false} />
+                    <Tooltip contentStyle={{ backgroundColor: '#111111', borderColor: '#262626', fontSize: 10, borderRadius: 12 }} />
+                    <Area type="monotone" dataKey="cpu" stroke="#F97316" strokeWidth={2} fillOpacity={1} fill="url(#cpuGrad)" />
                     <Area type="monotone" dataKey="ram" stroke="#22C55E" strokeWidth={2} fillOpacity={1} fill="url(#ramGrad)" />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -132,15 +132,15 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* Security Compliance checks */}
-          <div className="glass-panel rounded-card p-card-padding border border-border/80 shadow-md">
+          <div className="bg-[#151515] rounded-card p-6 border border-border shadow-md">
             <div className="border-b border-border pb-3.5 mb-5 select-none">
-              <h3 className="font-bold text-[14px] text-text uppercase tracking-wider">Automated Audit & Compliance Checks</h3>
-              <p className="text-caption text-muted mt-1 font-normal">SentinelAgent CIS benchmark configuration status</p>
+              <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Automated Audit & Compliance Checks</h3>
+              <p className="text-caption text-[#71717A] mt-1 font-normal">SentinelAgent CIS benchmark configuration status</p>
             </div>
             
             <div className="space-y-4">
               {server.checks.map((chk) => (
-                <div key={chk.id} className="p-4.5 rounded-input bg-background/55 border border-border flex items-start gap-4">
+                <div key={chk.id} className="p-4.5 rounded-input bg-[#111111] border border-border flex items-start gap-4 animate-fade-in">
                   <div className="mt-1 flex-shrink-0">
                     {chk.status === 'passed' ? (
                       <CheckCircle className="h-5 w-5 text-success" />
@@ -155,7 +155,7 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
                       <span className="font-bold text-text text-small-text">{chk.title}</span>
                       <StatusChip status={chk.status === 'passed' ? 'healthy' : chk.status === 'warning' ? 'warning' : 'critical'} />
                     </div>
-                    <p className="text-muted mt-1.5 leading-normal">{chk.details}</p>
+                    <p className="text-[#A1A1AA] mt-1.5 leading-normal">{chk.details}</p>
                   </div>
                 </div>
               ))}
@@ -163,7 +163,7 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* Open Ports List */}
-          <div className="glass-panel rounded-card p-card-padding border border-border/80 shadow-md">
+          <div className="bg-[#151515] rounded-card p-6 border border-border shadow-md">
             <div className="border-b border-border pb-3 mb-4 select-none">
               <span className="text-caption font-bold text-text uppercase tracking-wider block">Open Ingress Ports Matrix</span>
             </div>
@@ -171,7 +171,7 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
               {server.openPorts.map((port) => (
                 <span 
                   key={port} 
-                  className="px-4 py-2 rounded-input border border-border bg-card hover:border-primary/30 text-caption font-mono font-bold text-text/95 transition-all select-none"
+                  className="px-4 py-2 rounded-input border border-border bg-[#111111] hover:border-primary/30 text-caption font-mono font-bold text-text/95 transition-all select-none"
                 >
                   :{port}
                 </span>
@@ -185,26 +185,26 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
         <div className="space-y-8">
           
           {/* Agent Status Detail Card */}
-          <div className="glass-panel rounded-card p-6 border border-border/80 shadow-md">
+          <div className="bg-[#151515] rounded-card p-6 border border-border shadow-md">
             <div className="border-b border-border pb-3.5 mb-5 flex items-center justify-between select-none">
               <span className="text-caption font-bold text-text uppercase tracking-wider">SentinelAgent Node Detail</span>
-              <Settings className="h-4.5 w-4.5 text-muted" />
+              <Settings className="h-4.5 w-4.5 text-[#71717A]" />
             </div>
 
-            <div className="text-caption space-y-3.5 text-muted leading-relaxed font-normal">
-              <div className="flex justify-between border-b border-border/40 pb-2">
+            <div className="text-caption space-y-3.5 text-[#A1A1AA] leading-relaxed font-normal">
+              <div className="flex justify-between border-b border-border/60 pb-2">
                 <span>Agent Status:</span>
                 <span className="font-bold text-success capitalize">{server.agentStatus}</span>
               </div>
-              <div className="flex justify-between border-b border-border/40 pb-2">
+              <div className="flex justify-between border-b border-border/60 pb-2">
                 <span>Host Platform:</span>
                 <span className="font-bold text-text capitalize">{server.os}</span>
               </div>
-              <div className="flex justify-between border-b border-border/40 pb-2">
+              <div className="flex justify-between border-b border-border/60 pb-2">
                 <span>Core Kernel:</span>
                 <span className="font-mono text-text font-bold">5.15.0-89-generic</span>
               </div>
-              <div className="flex justify-between border-b border-border/40 pb-2">
+              <div className="flex justify-between border-b border-border/60 pb-2">
                 <span>Vulnerability Score:</span>
                 <span className="font-bold text-text">{server.securityScore}/100</span>
               </div>
@@ -218,10 +218,10 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* Running process controller with Kill actions */}
-          <div className="glass-panel rounded-card p-6 flex flex-col max-h-[400px] border border-border/80 shadow-md">
+          <div className="bg-[#151515] rounded-card p-6 flex flex-col max-h-[400px] border border-border shadow-md">
             <div className="border-b border-border pb-3.5 mb-5 flex-shrink-0 flex items-center justify-between select-none">
               <span className="text-caption font-bold text-text uppercase tracking-wider">Process Tree ({server.runningProcesses.length})</span>
-              <span className="text-[10px] text-muted font-bold uppercase">Terminate PID</span>
+              <span className="text-[10px] text-[#71717A] font-bold uppercase">Terminate PID</span>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-3 pr-1">
@@ -230,16 +230,16 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
                   key={p.pid} 
                   className={`p-3 rounded-input border transition-colors flex items-center justify-between text-caption ${
                     p.threatScore > 50 
-                      ? 'bg-critical/5 border-critical/40 hover:bg-critical/10' 
-                      : 'bg-background/55 border-border hover:border-primary/20'
+                      ? 'bg-critical/10 border-critical/20' 
+                      : 'bg-[#111111] border-border hover:border-primary/20'
                   }`}
                 >
                   <div className="flex flex-col text-left font-normal">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-text truncate max-w-[130px]">{p.name}</span>
-                      <span className="font-mono text-muted text-[10px] font-bold">({p.pid})</span>
+                      <span className="font-mono text-[#71717A] text-[10px] font-bold">({p.pid})</span>
                     </div>
-                    <div className="flex items-center gap-2.5 text-[10px] text-muted mt-1 font-bold font-mono">
+                    <div className="flex items-center gap-2.5 text-[10px] text-[#71717A] mt-1 font-bold font-mono">
                       <span>CPU: {p.cpu}%</span>
                       <span>RAM: {p.ram}%</span>
                     </div>
@@ -255,7 +255,7 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
                       <Power className="h-3 w-3" /> Kill
                     </ActionButton>
                   ) : (
-                    <span className="text-[10px] text-muted font-bold uppercase select-none pr-1">Safe</span>
+                    <span className="text-[10px] text-[#71717A] font-bold uppercase select-none pr-1">Safe</span>
                   )}
                 </div>
               ))}
@@ -263,26 +263,26 @@ export default function ServerDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           {/* Active Network Connections */}
-          <div className="glass-panel rounded-card p-6 border border-border/80 shadow-md">
+          <div className="bg-[#151515] rounded-card p-6 border border-border shadow-md">
             <div className="border-b border-border pb-3.5 mb-5 flex items-center justify-between select-none">
               <span className="text-caption font-bold text-text uppercase tracking-wider">Active Socket Matrices</span>
-              <Network className="h-4.5 w-4.5 text-muted" />
+              <Network className="h-4.5 w-4.5 text-[#71717A]" />
             </div>
 
             <div className="space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
               {server.connections.map((c, i) => (
-                <div key={i} className="p-3 rounded-input bg-background/55 border border-border flex items-center justify-between text-caption leading-relaxed font-normal">
+                <div key={i} className="p-3 rounded-input bg-[#111111] border border-border flex items-center justify-between text-caption leading-relaxed font-normal">
                   <div className="flex flex-col">
                     <span className="font-bold text-text">{c.proto.toUpperCase()} {c.localAddr}</span>
-                    <span className="text-muted mt-0.5 font-mono text-[10px]">← {c.foreignAddr}</span>
+                    <span className="text-[#71717A] mt-0.5 font-mono text-[10px]">← {c.foreignAddr}</span>
                   </div>
-                  <span className="font-mono text-muted text-[10px] bg-border/40 px-2 py-0.5 rounded-badge font-bold select-none">
+                  <span className="font-mono text-[#A1A1AA] text-[10px] bg-[#1A1A1A] border border-border/40 px-2 py-0.5 rounded-badge font-bold select-none">
                     PID:{c.pid}
                   </span>
                 </div>
               ))}
               {server.connections.length === 0 && (
-                <div className="text-center text-caption text-muted py-6 font-normal">No network sockets open.</div>
+                <div className="text-center text-caption text-[#71717A] py-6 font-normal">No network sockets open.</div>
               )}
             </div>
           </div>

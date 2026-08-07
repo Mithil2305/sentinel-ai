@@ -1,14 +1,19 @@
 :root {
   /* Brand color tokens */
-  --color-background: #0B1020;
-  --color-card: #111827;
-  --color-border: #1F2937;
-  --color-primary: #3B82F6;
+  --color-background: #090909;
+  --color-secondary-surface: #111111;
+  --color-card: #151515;
+  --color-elevated-card: #1A1A1A;
+  --color-border: #262626;
+  --color-primary: #F97316;
+  --color-hover-accent: #FB923C;
   --color-success: #22C55E;
   --color-warning: #F59E0B;
   --color-critical: #EF4444;
-  --color-text: #F9FAFB;
-  --color-muted: #9CA3AF;
+  --color-information: #3B82F6;
+  --color-text: #FAFAFA;
+  --color-secondary-text: #A1A1AA;
+  --color-muted: #71717A;
 
   /* Layout and 8px grid spacing tokens */
   --spacing-xs: 8px;
@@ -20,11 +25,11 @@
   --spacing-xxxxl: 64px;
 
   --spacing-page-x-desktop: 32px;
-  --spacing-page-y-desktop: 28px;
-  --spacing-page-x-large: 40px;
+  --spacing-page-y-desktop: 32px;
+  --spacing-page-x-large: 32px;
   
   --spacing-section-gap: 32px;
-  --spacing-card-gap: 24px;
+  --spacing-card-gap: 20px;
   --spacing-control-gap: 16px;
   --spacing-label-gap: 8px;
   
@@ -34,12 +39,12 @@
   /* Typography scale */
   --font-size-display: 42px;
   --font-size-page-title: 30px;
-  --font-size-section-title: 24px;
-  --font-size-card-title: 18px;
+  --font-size-section-title: 22px;
+  --font-size-card-title: 16px;
   --font-size-subsection: 16px;
   --font-size-body: 14px;
-  --font-size-small-text: 12px;
-  --font-size-caption: 11px;
+  --font-size-small-text: 14px;
+  --font-size-caption: 12px;
 
   /* Font weights */
   --font-weight-major-title: 700;
@@ -50,12 +55,11 @@
   /* Border radius */
   --radius-card: 16px;
   --radius-button: 12px;
-  --radius-input: 10px;
+  --radius-input: 12px;
   --radius-badge: 9999px;
 
   /* Typography family overrides */
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: var(--font-sans), sans-serif;
 }
 
 /* Custom Reset & Base Styling */
@@ -80,6 +84,16 @@ input, select, textarea, button {
   font-family: inherit;
   font-size: inherit;
   color: inherit;
+}
+
+input {
+  background-color: transparent;
+  border: none;
+}
+
+input::placeholder {
+  color: var(--color-muted);
+  opacity: 0.6;
 }
 
 button {
@@ -129,6 +143,13 @@ select option {
 .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
 
 /* Grid Columns Spans */
 .col-span-1 { grid-column: span 1 / span 1; }
@@ -136,6 +157,13 @@ select option {
 .col-span-3 { grid-column: span 3 / span 3; }
 .col-span-4 { grid-column: span 4 / span 4; }
 .col-span-5 { grid-column: span 5 / span 5; }
+.col-span-6 { grid-column: span 6 / span 6; }
+.col-span-7 { grid-column: span 7 / span 7; }
+.col-span-8 { grid-column: span 8 / span 8; }
+.col-span-9 { grid-column: span 9 / span 9; }
+.col-span-10 { grid-column: span 10 / span 10; }
+.col-span-11 { grid-column: span 11 / span 11; }
+.col-span-12 { grid-column: span 12 / span 12; }
 
 /* Layout Positioning */
 .relative { position: relative; }
@@ -145,8 +173,11 @@ select option {
 .bottom-0 { bottom: 0; }
 .left-0 { left: 0; }
 .right-0 { right: 0; }
+.-left-3 { left: -12px; }
+.-left-4 { left: -16px; }
 .z-10 { z-index: 10; }
 .z-20 { z-index: 20; }
+.z-40 { z-index: 40; }
 .z-50 { z-index: 50; }
 
 /* Gaps */
@@ -159,7 +190,12 @@ select option {
 .gap-4 { gap: 16px; }
 .gap-4\.5 { gap: 18px; }
 .gap-5 { gap: 20px; }
+.gap-6 { gap: 24px; }
+.gap-7 { gap: 28px; }
 .gap-8 { gap: 32px; }
+.gap-10 { gap: 40px; }
+.gap-12 { gap: 48px; }
+.gap-\[20px\] { gap: 20px; }
 .gap-card-gap { gap: var(--spacing-card-gap); }
 .gap-control-gap { gap: var(--spacing-control-gap); }
 .gap-label-gap { gap: var(--spacing-label-gap); }
@@ -185,6 +221,7 @@ select option {
 .px-4 { padding-left: 16px; padding-right: 16px; }
 .px-5 { padding-left: 20px; padding-right: 20px; }
 .px-8 { padding-left: 32px; padding-right: 32px; }
+.px-page-x-desktop { padding-left: var(--spacing-page-x-desktop); padding-right: var(--spacing-page-x-desktop); }
 
 .py-0\.5 { padding-top: 2px; padding-bottom: 2px; }
 .py-1 { padding-top: 4px; padding-bottom: 4px; }
@@ -194,6 +231,7 @@ select option {
 .py-3 { padding-top: 12px; padding-bottom: 12px; }
 .py-3\.5 { padding-top: 14px; padding-bottom: 14px; }
 .py-16 { padding-top: 64px; padding-bottom: 64px; }
+.py-page-y-desktop { padding-top: var(--spacing-page-y-desktop); padding-bottom: var(--spacing-page-y-desktop); }
 
 .pt-0\.5 { padding-top: 2px; }
 .pt-1 { padding-top: 4px; }
@@ -236,6 +274,7 @@ select option {
 .mb-5 { margin-bottom: 20px; }
 .mb-6 { margin-bottom: 24px; }
 .mb-8 { margin-bottom: 32px; }
+.mb-section-gap { margin-bottom: var(--spacing-section-gap); }
 
 .my-1\.5 { margin-top: 6px; margin-bottom: 6px; }
 .my-3 { margin-top: 12px; margin-bottom: 12px; }
@@ -269,6 +308,7 @@ select option {
 /* Width & Height */
 .w-full { width: 100%; }
 .h-full { height: 100%; }
+.h-screen { height: 100vh; }
 .min-h-screen { min-height: 100vh; }
 .min-w-0 { min-width: 0; }
 
@@ -388,10 +428,13 @@ select option {
 /* Background Colors */
 .bg-background { background-color: var(--color-background); }
 .bg-card { background-color: var(--color-card); }
+.bg-secondary-surface { background-color: var(--color-secondary-surface); }
+.bg-elevated-card { background-color: var(--color-elevated-card); }
 .bg-primary { background-color: var(--color-primary); }
 .bg-success { background-color: var(--color-success); }
 .bg-warning { background-color: var(--color-warning); }
 .bg-critical { background-color: var(--color-critical); }
+.bg-information { background-color: var(--color-information); }
 .bg-black { background-color: #000000; }
 .bg-transparent { background-color: transparent; }
 
@@ -399,6 +442,8 @@ select option {
 .bg-primary\/10 { background-color: color-mix(in srgb, var(--color-primary) 10%, transparent); }
 .bg-primary\/15 { background-color: color-mix(in srgb, var(--color-primary) 15%, transparent); }
 .bg-primary\/20 { background-color: color-mix(in srgb, var(--color-primary) 20%, transparent); }
+.bg-information\/10 { background-color: color-mix(in srgb, var(--color-information) 10%, transparent); }
+.bg-information\/15 { background-color: color-mix(in srgb, var(--color-information) 15%, transparent); }
 .bg-success\/5 { background-color: color-mix(in srgb, var(--color-success) 5%, transparent); }
 .bg-success\/10 { background-color: color-mix(in srgb, var(--color-success) 10%, transparent); }
 .bg-success\/15 { background-color: color-mix(in srgb, var(--color-success) 15%, transparent); }
@@ -422,10 +467,12 @@ select option {
 /* Text Colors */
 .text-text { color: var(--color-text); }
 .text-muted { color: var(--color-muted); }
+.text-secondary-text { color: var(--color-secondary-text); }
 .text-primary { color: var(--color-primary); }
 .text-success { color: var(--color-success); }
 .text-warning { color: var(--color-warning); }
 .text-critical { color: var(--color-critical); }
+.text-information { color: var(--color-information); }
 
 .text-muted\/60 { color: color-mix(in srgb, var(--color-muted) 60%, transparent); }
 .text-muted\/70 { color: color-mix(in srgb, var(--color-muted) 70%, transparent); }
@@ -448,6 +495,8 @@ select option {
 .border-primary\/20 { border-color: color-mix(in srgb, var(--color-primary) 20%, transparent); }
 .border-primary\/30 { border-color: color-mix(in srgb, var(--color-primary) 30%, transparent); }
 .border-primary\/60 { border-color: color-mix(in srgb, var(--color-primary) 60%, transparent); }
+.border-information\/20 { border-color: color-mix(in srgb, var(--color-information) 20%, transparent); }
+.border-information\/30 { border-color: color-mix(in srgb, var(--color-information) 30%, transparent); }
 .border-success\/20 { border-color: color-mix(in srgb, var(--color-success) 20%, transparent); }
 .border-success\/30 { border-color: color-mix(in srgb, var(--color-success) 30%, transparent); }
 .border-success\/35 { border-color: color-mix(in srgb, var(--color-success) 35%, transparent); }
@@ -714,4 +763,10 @@ button:disabled, input:disabled, select:disabled {
 @media (min-width: 1280px) {
   .xl\:flex-row { flex-direction: row; }
   .xl\:items-center { align-items: center; }
+  .xl\:px-page-x-large { padding-left: var(--spacing-page-x-large); padding-right: var(--spacing-page-x-large); }
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }

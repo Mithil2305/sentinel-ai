@@ -61,27 +61,27 @@ export default function ApprovalsPage() {
             <motion.div
               key={app.id}
               layout
-              className={`glass-panel rounded-card overflow-hidden border transition-all ${
-                isExpanded ? 'glow-critical border-critical/40' : 'hover:border-border/80'
+              className={`bg-[#151515] rounded-card overflow-hidden border transition-all duration-300 ${
+                isExpanded ? 'border-critical/40 shadow-lg' : 'border-border hover:border-border/80'
               }`}
             >
               
               {/* Header / Clickable Summary Row */}
               <div 
                 onClick={() => toggleExpand(app.id)}
-                className="p-card-padding flex items-center justify-between cursor-pointer select-none bg-card/20"
+                className="p-6 flex items-center justify-between cursor-pointer select-none bg-[#151515]"
               >
-                <div className="flex items-center gap-lg">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-input bg-critical/15 text-critical border border-critical/30 animate-pulse">
+                <div className="flex items-center gap-6">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-input bg-critical/10 text-critical border border-critical/20 animate-pulse">
                     <ShieldAlert className="h-6 w-6" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-xs">
-                      <span className="font-mono font-bold text-caption text-muted">{app.id}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-caption text-[#71717A]">{app.id}</span>
                       <StatusChip status={app.risk === 'high' ? 'critical' : app.risk} />
                     </div>
                     <h3 className="font-bold text-subsection text-text mt-1.5 leading-snug">{app.title}</h3>
-                    <div className="flex items-center gap-3 text-caption text-muted mt-2 font-normal">
+                    <div className="flex items-center gap-3 text-caption text-[#71717A] mt-2 font-normal">
                       <span>Server: <strong className="text-text font-bold">{app.server}</strong></span>
                       <span>•</span>
                       <span>Detected: {app.detectedAt}</span>
@@ -89,7 +89,7 @@ export default function ApprovalsPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-lg">
+                <div className="flex items-center gap-6">
                   <div className="hidden sm:flex gap-3">
                     <ActionButton
                       variant="primary"
@@ -102,7 +102,7 @@ export default function ApprovalsPage() {
                       Approve
                     </ActionButton>
                     <ActionButton
-                      variant="secondary"
+                      variant="outline"
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -112,7 +112,7 @@ export default function ApprovalsPage() {
                       Reject
                     </ActionButton>
                   </div>
-                  {isExpanded ? <ChevronUp className="h-5 w-5 text-muted" /> : <ChevronDown className="h-5 w-5 text-muted" />}
+                  {isExpanded ? <ChevronUp className="h-5 w-5 text-[#71717A]" /> : <ChevronDown className="h-5 w-5 text-[#71717A]" />}
                 </div>
               </div>
 
@@ -125,7 +125,7 @@ export default function ApprovalsPage() {
                     exit={{ height: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="p-8 border-t border-border bg-black/50 space-y-6 text-small-text text-muted">
+                    <div className="p-8 border-t border-border bg-[#0E0E0E] space-y-6 text-small-text text-[#A1A1AA]">
                       
                       {/* AI Investigation Section */}
                       <AIInsightCard title="SentinelAI Copilot Investigation Summary" badgeText="Analysis Complete">
@@ -133,13 +133,13 @@ export default function ApprovalsPage() {
                       </AIInsightCard>
 
                       {/* Evidence Timeline */}
-                      <div className="space-y-label-gap">
-                        <span className="font-bold text-text uppercase text-[12px] tracking-wider block">
+                      <div className="space-y-2">
+                        <span className="font-bold text-text uppercase text-[10px] tracking-wider block">
                           Evidence Logs Collected
                         </span>
-                        <div className="bg-background/90 border border-border rounded-card p-5 font-mono text-xs space-y-2">
+                        <div className="bg-[#090909] border border-border rounded-card p-5 font-mono text-xs space-y-2">
                           {app.evidence.map((ev, i) => (
-                            <div key={i} className="flex items-start gap-2 text-muted">
+                            <div key={i} className="flex items-start gap-2 text-[#A1A1AA]">
                               <span className="text-critical font-bold">&gt;</span>
                               <span className="break-all">{ev}</span>
                             </div>
@@ -148,13 +148,13 @@ export default function ApprovalsPage() {
                       </div>
 
                       {/* Affected Files */}
-                      <div className="space-y-label-gap">
-                        <span className="font-bold text-text uppercase text-[12px] tracking-wider block">
+                      <div className="space-y-2">
+                        <span className="font-bold text-text uppercase text-[10px] tracking-wider block">
                           Affected File Paths ({app.affectedFiles.length})
                         </span>
                         <div className="space-y-2">
                           {app.affectedFiles.map((file, i) => (
-                            <div key={i} className="flex items-center gap-3 p-3 rounded-input bg-background/60 border border-border">
+                            <div key={i} className="flex items-center gap-3 p-3 rounded-input bg-[#111111] border border-border animate-fade-in">
                               <FileCode className="h-4.5 w-4.5 text-primary flex-shrink-0" />
                               <span className="font-mono text-caption text-text break-all">{file}</span>
                             </div>
@@ -163,17 +163,17 @@ export default function ApprovalsPage() {
                       </div>
 
                       {/* proposed action plan details */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-border/40 pt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-border/60 pt-6">
                         <div className="space-y-1.5">
-                          <span className="font-bold text-text uppercase text-[12px] tracking-wider block">
+                          <span className="font-bold text-text uppercase text-[10px] tracking-wider block">
                             Proposed Remediation Steps
                           </span>
-                          <p className="leading-relaxed font-normal text-text/90 text-small-text">
+                          <p className="leading-relaxed font-normal text-[#A1A1AA] text-small-text">
                             {app.proposedRemediation}
                           </p>
                         </div>
                         <div className="space-y-1.5">
-                          <span className="font-bold text-text uppercase text-[12px] tracking-wider block">
+                          <span className="font-bold text-text uppercase text-[10px] tracking-wider block">
                             Risk Assessment & Impact
                           </span>
                           <p className="leading-relaxed font-bold text-warning text-small-text">
@@ -183,23 +183,23 @@ export default function ApprovalsPage() {
                       </div>
 
                       {/* MITRE technique mapping */}
-                      <div className="border-t border-border/40 pt-6 flex items-center justify-between flex-wrap gap-4">
+                      <div className="border-t border-border/60 pt-6 flex items-center justify-between flex-wrap gap-4">
                         <div className="flex items-center gap-2.5">
-                          <span className="font-bold text-text uppercase text-[12px] tracking-wider">
+                          <span className="font-bold text-text uppercase text-[10px] tracking-wider">
                             MITRE ATT&CK Mapping:
                           </span>
-                          <span className="font-mono text-caption text-primary bg-primary/10 border border-primary/25 px-2.5 py-1 rounded-md font-bold">
+                          <span className="font-mono text-caption text-primary bg-[#1A1A1A] border border-border/40 px-2.5 py-1 rounded-md font-bold">
                             {app.mitreMapping}
                           </span>
                         </div>
-                        <div className="text-caption text-muted flex items-center gap-2 font-normal">
+                        <div className="text-caption text-[#71717A] flex items-center gap-2 font-normal">
                           <Clock className="h-4 w-4" />
                           <span>SLA countdown: 4m 12s before auto-pause</span>
                         </div>
                       </div>
 
                       {/* Action buttons inside card */}
-                      <div className="border-t border-border/40 pt-5 flex flex-wrap gap-3 justify-end">
+                      <div className="border-t border-border/60 pt-5 flex flex-wrap gap-3 justify-end">
                         <ActionButton
                           variant="primary"
                           onClick={() => approveApproval(app.id)}
@@ -237,13 +237,13 @@ export default function ApprovalsPage() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="glass-panel rounded-card p-12 flex flex-col items-center justify-center text-center border border-success/30 bg-success/5"
+            className="bg-[#151515] rounded-card p-12 flex flex-col items-center justify-center text-center border border-success/20 bg-success/10"
           >
             <div className="h-14 w-14 rounded-badge bg-success/15 text-success flex items-center justify-center border border-success/35 mb-4 glow-success">
               <ShieldCheck className="h-6 w-6" />
             </div>
-            <h3 className="font-bold text-[14px] text-text uppercase tracking-wider">Remediation Queue Clear</h3>
-            <p className="text-caption text-muted mt-2 max-w-sm font-normal">
+            <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Remediation Queue Clear</h3>
+            <p className="text-caption text-[#A1A1AA] mt-2 max-w-sm font-normal">
               All autonomous containment directives have run cleanly. No threats are flagged for manual operator confirmation at this time.
             </p>
           </motion.div>

@@ -105,16 +105,16 @@ export default function ThreatIntelligencePage() {
       />
 
       {/* MITRE ATT&CK HEATMAP MATRIX */}
-      <div className="glass-panel rounded-card p-card-padding border border-border/80 shadow-md">
+      <div className="bg-[#151515] rounded-card p-6 border border-border shadow-md">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border pb-5 mb-8 gap-4 select-none">
           <div>
-            <h3 className="font-bold text-[14px] text-text uppercase tracking-wider">MITRE ATT&CK Enterprise Matrix</h3>
-            <p className="text-caption text-muted mt-1 font-normal">Real-time mapping of detected exploitation techniques</p>
+            <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">MITRE ATT&CK Enterprise Matrix</h3>
+            <p className="text-caption text-[#71717A] mt-1 font-normal">Real-time mapping of detected exploitation techniques</p>
           </div>
           <div className="flex flex-wrap items-center gap-3.5 text-caption font-bold">
-            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-badge bg-critical animate-pulse shadow-sm shadow-critical" /> Active Critical</span>
-            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-badge bg-warning shadow-sm shadow-warning" /> Active High</span>
-            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-badge bg-success shadow-sm shadow-success" /> Remediated</span>
+            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-badge bg-critical animate-pulse" /> Active Critical</span>
+            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-badge bg-warning" /> Active High</span>
+            <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-badge bg-success" /> Remediated</span>
             <span className="flex items-center gap-1.5"><span className="h-3 w-3 rounded-badge bg-border" /> Inactive</span>
           </div>
         </div>
@@ -129,16 +129,16 @@ export default function ThreatIntelligencePage() {
               
               <div className="space-y-4">
                 {column.techniques.map((tech) => {
-                  let statusClass = 'bg-background/80 border-border text-muted';
+                  let statusClass = 'bg-[#090909]/60 border-border text-[#71717A]';
                   let pulseClass = '';
                   
                   if (tech.status === 'active-critical') {
-                    statusClass = 'bg-critical/15 border-critical/40 text-critical glow-critical font-bold';
+                    statusClass = 'bg-critical/10 border-critical/30 text-critical font-bold';
                     pulseClass = 'animate-cyber-pulse';
                   } else if (tech.status === 'active-high') {
-                    statusClass = 'bg-warning/15 border-warning/40 text-warning glow-warning font-bold';
+                    statusClass = 'bg-warning/10 border-warning/30 text-warning font-bold';
                   } else if (tech.status === 'resolved') {
-                    statusClass = 'bg-success/10 border-success/35 text-success font-bold';
+                    statusClass = 'bg-success/10 border-success/20 text-success font-bold';
                   }
   
                   return (
@@ -154,7 +154,7 @@ export default function ThreatIntelligencePage() {
                       </div>
                       <div className="font-bold text-[11px] mt-1.5 leading-snug">{tech.name}</div>
                       {tech.incidentId && (
-                        <div className="text-[10px] font-mono mt-1.5 font-bold text-primary underline cursor-pointer">
+                        <div className="text-[10px] font-mono mt-1.5 font-bold text-primary hover:text-[#FB923C] underline cursor-pointer transition-colors">
                           {tech.incidentId}
                         </div>
                       )}
@@ -171,20 +171,20 @@ export default function ThreatIntelligencePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Radar Attack Categories */}
-        <div className="glass-panel rounded-card p-card-padding flex flex-col h-[460px] border border-border/80 shadow-md">
+        <div className="bg-[#151515] rounded-card p-6 flex flex-col h-[460px] border border-border shadow-md">
           <div className="border-b border-border pb-5 mb-6">
-            <h3 className="font-bold text-[14px] text-text uppercase tracking-wider">Tactical Threat Surface</h3>
-            <p className="text-caption text-muted mt-1 font-normal">Categorised attack vector frequency index</p>
+            <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Tactical Threat Surface</h3>
+            <p className="text-caption text-[#71717A] mt-1 font-normal">Categorised attack vector frequency index</p>
           </div>
 
           <div className="w-full h-[300px]">
             {mounted ? (
               <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <RadarChart cx="50%" cy="50%" outerRadius="75%" data={threatCategoryRadar}>
-                  <PolarGrid stroke="#1F2937" />
-                  <PolarAngleAxis dataKey="subject" stroke="#9CA3AF" fontSize={10} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#1F2937" fontSize={9} />
-                  <Radar name="Threat Vector Intensity" dataKey="A" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.25} />
+                  <PolarGrid stroke="#262626" />
+                  <PolarAngleAxis dataKey="subject" stroke="#71717A" fontSize={10} />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#262626" fontSize={9} />
+                  <Radar name="Threat Vector Intensity" dataKey="A" stroke="#F97316" fill="#F97316" fillOpacity={0.15} />
                 </RadarChart>
               </ResponsiveContainer>
             ) : (
@@ -194,22 +194,22 @@ export default function ThreatIntelligencePage() {
         </div>
 
         {/* Most Targeted Assets */}
-        <div className="glass-panel rounded-card p-card-padding flex flex-col h-[460px] border border-border/80 shadow-md">
+        <div className="bg-[#151515] rounded-card p-6 flex flex-col h-[460px] border border-border shadow-md">
           <div className="border-b border-border pb-5 mb-6">
-            <h3 className="font-bold text-[14px] text-text uppercase tracking-wider">Top Targeted Assets</h3>
-            <p className="text-caption text-muted mt-1 font-normal">Monitored servers sorted by ingestion threat alerts count</p>
+            <h3 className="font-bold text-[13px] text-text uppercase tracking-wider">Top Targeted Assets</h3>
+            <p className="text-caption text-[#71717A] mt-1 font-normal">Monitored servers sorted by ingestion threat alerts count</p>
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-4 pr-1">
             {targetedAssets.map((asset, i) => (
-              <div key={i} className="p-4 rounded-input bg-background/55 border border-border flex items-center justify-between text-caption hover:border-primary/20 transition-all">
+              <div key={i} className="p-4 rounded-input bg-[#111111] border border-border flex items-center justify-between text-caption hover:border-primary/20 transition-all">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-input bg-border text-muted">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-input bg-[#1A1A1A] border border-border/40 text-[#71717A]">
                     <Target className="h-4 w-4" />
                   </div>
                   <div>
                     <span className="font-bold text-text text-[13px]">{asset.name}</span>
-                    <span className="text-caption text-muted block mt-0.5 font-normal">{asset.type}</span>
+                    <span className="text-caption text-[#71717A] block mt-0.5 font-normal">{asset.type}</span>
                   </div>
                 </div>
 
@@ -230,7 +230,7 @@ export default function ThreatIntelligencePage() {
           badgeText="Analysis Live"
           className="h-[460px]"
         >
-          <div className="space-y-5 text-caption leading-relaxed text-muted mt-2">
+          <div className="space-y-5 text-caption leading-relaxed text-[#A1A1AA] mt-2">
             <div className="flex gap-3 items-start">
               <AlertTriangle className="h-4.5 w-4.5 text-warning flex-shrink-0 mt-0.5" />
               <p className="font-normal">
@@ -252,7 +252,7 @@ export default function ThreatIntelligencePage() {
               </p>
             </div>
             
-            <div className="border-t border-border/40 pt-5 text-[10px] text-muted text-center font-bold uppercase tracking-wider">
+            <div className="border-t border-border/40 pt-5 text-[10px] text-[#71717A] text-center font-bold uppercase tracking-wider">
               Ingestion feed updated: Just now (1,284 rules active)
             </div>
           </div>

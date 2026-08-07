@@ -15,28 +15,28 @@ export const AIInsightCard: React.FC<AIInsightCardProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`glass-panel rounded-card p-card-padding border border-primary/25 glow-primary relative overflow-hidden shadow-lg ${className}`}>
+    <div className={`bg-[#151515] rounded-card p-6 border border-border relative overflow-hidden shadow-md ${className}`}>
       {/* Decorative background sparkles */}
       <div className="absolute top-0 right-0 p-4 text-primary/5 pointer-events-none">
         <Sparkles className="h-24 w-24" />
       </div>
       
       <div className="flex items-start gap-md relative z-10">
-        <div className="flex h-10 w-10 items-center justify-center rounded-button bg-primary/20 text-primary border border-primary/35 flex-shrink-0 shadow-md">
-          <Sparkles className="h-5 w-5 animate-pulse" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-button bg-primary/10 text-primary border border-primary/20 flex-shrink-0">
+          <Sparkles className="h-5 w-5" />
         </div>
         <div className="space-y-xs w-full">
           <div className="flex items-center gap-xs flex-wrap">
-            <h4 className="font-bold text-[14px] text-text uppercase tracking-wider">
+            <h4 className="font-bold text-[13px] text-text uppercase tracking-wider">
               {title}
             </h4>
             {badgeText && (
-              <span className="bg-success/20 text-success text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider border border-success/30">
+              <span className="bg-primary/10 text-primary text-[10px] px-2 py-0.5 rounded-badge font-bold uppercase tracking-wider border border-primary/20">
                 {badgeText}
               </span>
             )}
           </div>
-          <div className="text-body text-muted leading-relaxed font-normal">
+          <div className="text-body text-[#A1A1AA] leading-relaxed font-normal">
             {children}
           </div>
         </div>

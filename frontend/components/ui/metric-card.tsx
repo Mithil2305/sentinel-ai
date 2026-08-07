@@ -23,16 +23,16 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   className = '',
 }) => {
   const trendClasses = {
-    up: 'bg-success/15 text-success border border-success/30',
-    down: 'bg-primary/15 text-primary border border-primary/30',
-    warn: 'bg-warning/15 text-warning border border-warning/30 animate-pulse',
-    stable: 'bg-border/60 text-muted',
+    up: 'bg-success/10 text-success border border-success/20',
+    down: 'bg-primary/10 text-primary border border-primary/20',
+    warn: 'bg-warning/10 text-warning border border-warning/20',
+    stable: 'bg-[#1A1A1A] border border-border/40 text-[#71717A]',
   };
 
   return (
-    <div className={`glass-panel glass-panel-hover rounded-card p-card-padding flex flex-col justify-between h-40 relative group border border-border/80 shadow-md ${className}`}>
+    <div className={`bg-[#151515] rounded-card p-6 flex flex-col justify-between h-40 relative group border border-border hover:border-primary/45 hover:bg-[#1A1A1A] transition-all duration-300 shadow-md ${className}`}>
       <div className="flex items-start justify-between">
-        <span className="text-[12px] font-bold text-muted uppercase tracking-wider">{title}</span>
+        <span className="text-[11px] font-bold text-[#71717A] uppercase tracking-wider">{title}</span>
         <Icon className={`h-5 w-5 ${color}`} />
       </div>
       
@@ -40,8 +40,8 @@ export const MetricCard: React.FC<MetricCardProps> = ({
         <span className="text-display font-bold tracking-tight text-text leading-none">{value}</span>
       </div>
 
-      <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/30">
-        <span className="text-[12px] text-muted font-normal truncate pr-xs">{subtext}</span>
+      <div className="flex items-center justify-between mt-auto pt-2 border-t border-border/60">
+        <span className="text-[12px] text-[#A1A1AA] font-normal truncate pr-xs">{subtext}</span>
         {trendVal && (
           <span className={`text-[12px] font-bold px-2.5 py-1 rounded-md flex items-center gap-1 flex-shrink-0 ${trend ? trendClasses[trend] : ''}`}>
             {trend === 'up' && <ArrowUpRight className="h-3 w-3" />}

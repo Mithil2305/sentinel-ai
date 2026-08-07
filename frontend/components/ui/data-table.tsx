@@ -23,13 +23,13 @@ export function DataTable<T>({
   rowClassName,
 }: DataTableProps<T>) {
   return (
-    <div className="glass-panel rounded-card overflow-hidden border border-border/80 shadow-md">
+    <div className="bg-card rounded-input overflow-hidden border border-border/80 shadow-sm">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-body border-collapse">
           <thead>
-            <tr className="border-b border-border bg-card/40 text-muted font-bold text-caption uppercase tracking-wider select-none">
+            <tr className="border-b border-border bg-[#111111] text-[#71717A] font-bold text-caption uppercase tracking-wider select-none">
               {columns.map((col, idx) => (
-                <th key={idx} className={`py-4 px-6 ${col.headerClassName || ''}`}>
+                <th key={idx} className={`py-3 px-5 ${col.headerClassName || ''}`}>
                   {col.header}
                 </th>
               ))}
@@ -43,10 +43,10 @@ export function DataTable<T>({
                   <tr
                     key={rowIdx}
                     onClick={() => onRowClick?.(item)}
-                    className={`hover:bg-border/20 transition-colors ${onRowClick ? 'cursor-pointer' : ''} ${customClasses}`}
+                    className={`hover:bg-[#111111] transition-colors ${onRowClick ? 'cursor-pointer' : ''} ${customClasses}`}
                   >
                     {columns.map((col, colIdx) => (
-                      <td key={colIdx} className={`py-4 px-6 text-muted text-small-text font-normal ${col.className || ''}`}>
+                      <td key={colIdx} className={`py-3 px-5 text-[#A1A1AA] text-small-text font-normal ${col.className || ''}`}>
                         {col.accessor(item)}
                       </td>
                     ))}
@@ -55,7 +55,7 @@ export function DataTable<T>({
               })
             ) : (
               <tr>
-                <td colSpan={columns.length} className="text-center py-12 text-muted font-bold text-small-text">
+                <td colSpan={columns.length} className="text-center py-10 text-[#71717A] font-bold text-small-text">
                   {emptyMessage}
                 </td>
               </tr>

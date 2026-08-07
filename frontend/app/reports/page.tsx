@@ -93,21 +93,21 @@ export default function ReportsPage() {
         <div className="md:col-span-2 space-y-6">
           
           {/* REPORT GENERATOR BOX */}
-          <div className="glass-panel rounded-card p-card-padding relative overflow-hidden border border-border/80 shadow-md">
+          <div className="bg-[#151515] rounded-card p-6 relative overflow-hidden border border-border shadow-md animate-fade-in">
             <div className="border-b border-border pb-5 mb-6 select-none">
-              <h2 className="font-bold text-[14px] text-text uppercase tracking-wider">Report Builder Form</h2>
-              <p className="text-caption text-muted mt-1 font-normal">Generate verified security compliance and posture logs</p>
+              <h2 className="font-bold text-[13px] text-text uppercase tracking-wider">Report Builder Form</h2>
+              <p className="text-caption text-[#71717A] mt-1 font-normal">Generate verified security compliance and posture logs</p>
             </div>
 
             <div className="space-y-6 text-caption">
               {/* Report Type */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="font-bold text-[10px] uppercase text-muted block select-none">Report Category</label>
+                  <label className="font-bold text-[10px] uppercase text-[#71717A] block select-none">Report Category</label>
                   <select
                     value={reportType}
                     onChange={(e) => setReportType(e.target.value)}
-                    className="w-full h-10 bg-background border border-border rounded-input px-3.5 text-small-text font-bold text-text focus:outline-none cursor-pointer"
+                    className="w-full h-10 bg-[#111111] border border-border rounded-input px-3.5 text-small-text font-bold text-text focus:outline-none cursor-pointer focus:border-primary/45 transition-colors"
                   >
                     <option value="weekly">Weekly SOC Summary</option>
                     <option value="monthly">Monthly Asset Audit</option>
@@ -118,11 +118,11 @@ export default function ReportsPage() {
 
                 {/* Server Scope */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-[10px] uppercase text-muted block select-none">Server Scope</label>
+                  <label className="font-bold text-[10px] uppercase text-[#71717A] block select-none">Server Scope</label>
                   <select
                     value={serverScope}
                     onChange={(e) => setServerScope(e.target.value)}
-                    className="w-full h-10 bg-background border border-border rounded-input px-3.5 text-small-text font-bold text-text focus:outline-none cursor-pointer"
+                    className="w-full h-10 bg-[#111111] border border-border rounded-input px-3.5 text-small-text font-bold text-text focus:outline-none cursor-pointer focus:border-primary/45 transition-colors"
                   >
                     <option value="all">All Infrastructure Nodes</option>
                     <option value="prod">Production Nodes Only</option>
@@ -132,12 +132,12 @@ export default function ReportsPage() {
               </div>
 
               {/* Include AI Insights Toggle */}
-              <div className="flex items-center justify-between p-4.5 rounded-input border border-border bg-background/30">
+              <div className="flex items-center justify-between p-4.5 rounded-input border border-border bg-[#111111]">
                 <div className="flex items-center gap-3">
                   <Sparkles className="h-4.5 w-4.5 text-primary" />
                   <div>
                     <span className="font-bold text-text text-small-text block">Include SentinelAI Summary</span>
-                    <span className="text-caption text-muted mt-0.5 font-normal block">Embeds LLM-driven root cause and remediation metrics</span>
+                    <span className="text-caption text-[#71717A] mt-0.5 font-normal block">Embeds LLM-driven root cause and remediation metrics</span>
                   </div>
                 </div>
                 <input 
@@ -169,11 +169,11 @@ export default function ReportsPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-20 select-none"
+                  className="absolute inset-0 bg-[#090909]/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center z-20 select-none"
                 >
                   <RefreshCw className="h-10 w-10 text-primary animate-spin mb-4" />
                   <span className="text-caption font-bold text-text uppercase tracking-wider animate-pulse">Generating Report Archive</span>
-                  <p className="text-caption text-muted mt-2.5 font-mono">{generationStep}</p>
+                  <p className="text-caption text-[#71717A] mt-2.5 font-mono">{generationStep}</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -186,19 +186,19 @@ export default function ReportsPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="glass-panel rounded-card p-card-padding border border-success/30 bg-success/5 shadow-md"
+                className="bg-[#151515] rounded-card p-6 border border-success/20 bg-success/10 shadow-md"
               >
                 <div className="flex items-start gap-4">
                   <div className="h-9 w-9 rounded-input bg-success/15 text-success flex items-center justify-center border border-success/30 flex-shrink-0">
                     <CheckCircle className="h-5 w-5" />
                   </div>
-                  <div className="flex-1 text-caption text-muted">
+                  <div className="flex-1 text-caption text-[#A1A1AA]">
                     <div className="flex justify-between items-center select-none">
                       <span className="font-bold text-[10px] uppercase tracking-wider text-success">Generation Successful</span>
-                      <span className="font-mono text-caption font-bold">{generatedReport.id}</span>
+                      <span className="font-mono text-caption font-bold text-text">{generatedReport.id}</span>
                     </div>
                     <h3 className="font-bold text-subsection text-text mt-2">{generatedReport.title}</h3>
-                    <div className="flex items-center gap-3 text-caption text-muted mt-2 font-normal">
+                    <div className="flex items-center gap-3 text-caption text-[#71717A] mt-2 font-normal">
                       <span>Category: {generatedReport.type}</span>
                       <span>•</span>
                       <span>Size: {generatedReport.size}</span>
@@ -216,7 +216,7 @@ export default function ReportsPage() {
                       </ActionButton>
                       <ActionButton
                         onClick={() => alert(`Share link copied to clipboard!`)}
-                        variant="secondary"
+                        variant="outline"
                         size="sm"
                         className="flex items-center gap-2"
                       >
@@ -232,17 +232,17 @@ export default function ReportsPage() {
         </div>
 
         {/* COLUMN 3: HISTORICAL ARCHIVE LIST */}
-        <div className="glass-panel rounded-card p-card-padding flex flex-col h-[520px] border border-border/80 shadow-md">
+        <div className="bg-[#151515] rounded-card p-6 flex flex-col h-[520px] border border-border shadow-md">
           <div className="border-b border-border pb-5 mb-6 flex-shrink-0 select-none">
             <span className="text-caption font-bold text-text uppercase tracking-wider block">Historical Reports</span>
-            <p className="text-caption text-muted mt-1 font-normal">Precompiled compliance audit logs</p>
+            <p className="text-caption text-[#71717A] mt-1 font-normal">Precompiled compliance audit logs</p>
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-4 pr-1">
             {reportsList.map((rep) => (
-              <div key={rep.id} className="p-4 rounded-input bg-background/55 border border-border text-caption hover:border-primary/20 transition-all flex flex-col justify-between h-32">
+              <div key={rep.id} className="p-4 rounded-input bg-[#111111] border border-border text-caption hover:border-primary/25 transition-all flex flex-col justify-between h-32">
                 <div>
-                  <div className="flex items-center justify-between text-[10px] text-muted font-mono font-bold select-none">
+                  <div className="flex items-center justify-between text-[10px] text-[#71717A] font-mono font-bold select-none">
                     <span>{rep.id}</span>
                     <span className="text-primary">{rep.type.toUpperCase()}</span>
                   </div>
@@ -251,11 +251,11 @@ export default function ReportsPage() {
                   </h3>
                 </div>
 
-                <div className="flex items-center justify-between border-t border-border/30 pt-3 mt-3">
-                  <span className="text-[11px] text-muted font-normal select-none">{rep.date} ({rep.size})</span>
+                <div className="flex items-center justify-between border-t border-border/60 pt-3 mt-3">
+                  <span className="text-[11px] text-[#71717A] font-normal select-none">{rep.date} ({rep.size})</span>
                   <button
                     onClick={() => handleDownload(rep.title)}
-                    className="p-2 rounded-input hover:bg-border text-muted hover:text-text transition-colors cursor-pointer"
+                    className="p-2 rounded-input hover:bg-[#1A1A1A] text-[#71717A] hover:text-text transition-colors cursor-pointer border border-transparent hover:border-border"
                     title="Download File"
                   >
                     <Download className="h-4 w-4" />

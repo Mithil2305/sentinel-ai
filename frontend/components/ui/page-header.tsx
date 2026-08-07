@@ -21,7 +21,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
           <span>{title}</span>
         </h1>
         {description && (
-          <p className="text-small-text text-muted leading-relaxed font-normal">
+          <p className="text-small-text text-secondary-text leading-relaxed font-normal">
             {description}
           </p>
         )}
