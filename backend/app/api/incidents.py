@@ -22,7 +22,7 @@ def list_incidents(
     severity: Optional[str] = None,
     server_id: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Optional[User] = Depends(get_optional_current_user)
 ):
     res = incident_service.list_incidents(
         db=db,
@@ -42,7 +42,7 @@ def list_incidents(
 def get_incident(
     incident_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: Optional[User] = Depends(get_optional_current_user)
 ):
     incident = incident_service.get_incident_by_id(db, incident_id)
     if not incident:

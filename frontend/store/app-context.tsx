@@ -393,6 +393,93 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   }, []);
 
+  // Real-Time Backend API & WebSocket Synchronization
+  useEffect(() => {
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+    const WS_URL = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000/ws';
+
+    const syncBackendData = async () => {
+      try {
+        const [incRes, appRes] = await Promise.all([
+          fetch(`${API_BASE}/incidents?limit=50`).then(r => r.ok ? r.json() : null),
+          fetch(`${API_BASE}/approvals`).then(r => r.ok ? r.json() : null)
+        ]);
+
+        if (incRes && incRes.incidents) {
+          const backendIncs: Incident[] = incRes.incidents.map((bInc: any) => ({
+            id: bInc.id,
+            threatName: bInc.title,
+            server: bInc.server_id,
+            severity: (bInc.severity || 'medium').toLowerCase() as Severity,
+            status: bInc.status === 'RESOLVED' ? 'resolved' : bInc.status === 'PENDING_APPROVAL' ? 'pending' : 'investigating',
+            mitreTechnique: bInc.mitre_technique || 'T1204 - User Execution',
+            createdAt: bInc.created_at ? new Date(bInc.created_at).toLocaleTimeString() : 'Just now',
+            rootCause: bInc.details?.root_cause || `Matched rule ${bInc.matched_rule}`,
+            affectedAssets: [bInc.server_id, bInc.matched_rule],
+            explanation: bInc.details?.root_cause || `Matched threat signature: ${bInc.matched_rule}`,
+            recommendedFix: bInc.remediation?.action_taken || bInc.details?.default_remediation || 'Automated containment',
+            history: (bInc.timeline || []).map((t: any) => ({ time: t.time ? t.time.slice(11, 19) : 'Just now', user: 'SentinelAI', action: t.event }))
+          }));
+
+          setIncidents(prev => {
+            const map = new Map();
+            // Backend incidents take priority
+            backendIncs.forEach(inc => map.set(inc.id, inc));
+            prev.forEach(inc => { if (!map.has(inc.id)) map.set(inc.id, inc); });
+            return Array.from(map.values());
+          });
+        }
+
+        if (appRes && appRes.approvals) {
+          const backendApps: Approval[] = appRes.approvals.map((bApp: any) => ({
+            id: bApp.id,
+            title: bApp.proposed_action,
+            server: bApp.server_id,
+            risk: (bApp.severity || 'high').toLowerCase() as Severity,
+            detectedAt: bApp.created_at ? new Date(bApp.created_at).toLocaleTimeString() : 'Just now',
+            explanation: bApp.risk_explanation || 'Escalated threat requires analyst validation.',
+            proposedRemediation: bApp.proposed_action,
+            affectedFiles: [bApp.script_to_run],
+            riskAssessment: bApp.risk_explanation || 'High risk mitigation.',
+            mitreMapping: 'MITRE ATT&CK Threat Mapping Active',
+            evidence: [bApp.script_to_run]
+          }));
+
+          setApprovals(prev => {
+            const map = new Map();
+            backendApps.forEach(app => map.set(app.id, app));
+            prev.forEach(app => { if (!map.has(app.id)) map.set(app.id, app); });
+            return Array.from(map.values());
+          });
+        }
+      } catch (err) {
+        // Backend offline, fallback to mock state
+      }
+    };
+
+    syncBackendData();
+    const interval = setInterval(syncBackendData, 2000);
+
+    // WebSocket real-time connection
+    let ws: WebSocket | null = null;
+    try {
+      ws = new WebSocket(WS_URL);
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (msg.type === 'NEW_INCIDENT' || msg.type === 'INCIDENT_UPDATED' || msg.type === 'APPROVAL_DECISION') {
+            syncBackendData();
+          }
+        } catch { }
+      };
+    } catch { }
+
+    return () => {
+      clearInterval(interval);
+      if (ws) ws.close();
+    };
+  }, []);
+
   // Log streaming emulation
   const logsStreamRef = useRef<boolean>(true);
   useEffect(() => {
@@ -526,9 +613,17 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   };
 
-  const approveApproval = (id: string) => {
+  const approveApproval = async (id: string) => {
     const approval = approvals.find(app => app.id === id);
     if (!approval) return;
+
+    // Call backend API if backend approval ID
+    if (id.startsWith('appr_')) {
+      try {
+        const { approveAction: backendApprove } = await import('../services/approvals');
+        await backendApprove(id, 'Approved via SOC Dashboard UI');
+      } catch (e) { }
+    }
 
     // Remove approval
     setApprovals(prev => prev.filter(app => app.id !== id));
@@ -583,9 +678,16 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }, 1000);
   };
 
-  const rejectApproval = (id: string) => {
+  const rejectApproval = async (id: string) => {
     const approval = approvals.find(app => app.id === id);
     if (!approval) return;
+
+    if (id.startsWith('appr_')) {
+      try {
+        const { rejectAction: backendReject } = await import('../services/approvals');
+        await backendReject(id, 'Rejected via SOC Dashboard UI');
+      } catch (e) { }
+    }
 
     setApprovals(prev => prev.filter(app => app.id !== id));
     addLog('WARN', `Operator REJECTED auto-remediation Action ${id} on ${approval.server}`, approval.server);
